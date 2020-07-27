@@ -16,5 +16,5 @@ class Graph
     public:
         Graph(short nodeCount);
         void drawNodes() const;
-        void Djikstra(short sourceNodeID);
+        void Djikstra(Node node);
 };

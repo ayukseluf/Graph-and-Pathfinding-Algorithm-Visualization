@@ -6,7 +6,7 @@ Graph::Graph(short nodeCount)
 
     // Generate nodes
     for (short i = 0; i < nodeCount; ++i)
-        nodes.push_back(i);
+        nodes.push_back(Node(i));
 
     // Generate edges
 
@@ -18,7 +18,7 @@ void Graph::drawNodes() const
         n.Draw();
 }
 
-void Graph::Djikstra(short sourceNodeID)
+void Graph::Djikstra(Node node)
 {
     
 }
