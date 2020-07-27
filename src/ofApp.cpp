@@ -4,17 +4,20 @@
 
 void ofApp::setup()
 {
-	ofBackground(80);
-	
-	for (int i = 0; i < 1000; i++) // Temp
-	{
-		Node* t = new Node();
-		map.insert(std::pair<int, Node*>(i, t));
-	}
+	// Intialization
+	showAllMenus = true;
+	showHelp = true;
+	showSettings = true;
+	showResults = true;
 
+	// Styling
+	ofBackground(80);
+	guiElementWidth = 250; // TODO: need to scale gui with window size
+	guiElementHeight = 20;
 	ofxGuiSetDefaultWidth(guiElementWidth);
 	ofxGuiSetDefaultHeight(guiElementHeight);
 
+	// Help GUI
 	helpGui.setup("Help");
 	helpGui.setPosition(ofGetWidth() - guiElementWidth - 5, 190);
 	helpGui.add(keyBinding1.setup("Toggle All", "     tab"));
@@ -23,6 +26,7 @@ void ofApp::setup()
 	helpGui.add(keyBinding4.setup("Toggle Results", " r"));
 	helpGui.add(keyBinding5.setup("Quit","           esc"));
 
+	// Settings GUI
 	settingsGui.setup("Settings");
 	settingsGui.setPosition(ofGetWidth() - guiElementWidth - 5, 370);
 	settingsGui.add(totalNodes.setup("Total Nodes", 100, 10, 1000));
@@ -42,12 +46,12 @@ void ofApp::setup()
 	settingsGui.add(velocity.setup("Velocity", 20, .1, 100));
 	settingsGui.add(timeLimit.setup("Time Limit", 500, 1, 1000));
 
+	// Results GUI
 	resultsGui.setup("Results");
 	resultsGui.setPosition(ofGetWidth() - guiElementWidth - 5, 770);
 	resultsGui.add(idealTimeLabel.setup("Ideal Time Taken","   0:00"));
 	resultsGui.add(actualTimeLabel.setup("Actual Time Taken","  0:00"));
 	resultsGui.add(timeDeltaLabel.setup("Inefficiency Delta", " 0:00"));
-
 }
 
 //--------------------------------------------------------------
@@ -57,10 +61,9 @@ void ofApp::update()
 }
 
 //--------------------------------------------------------------
-void ofApp::draw()
+void ofApp::draw() // Code not directly related to drawing should be placed in the update function
 {
-	for (int i = 0; i < totalNodes; i++) // Temp
-		map.at(i)->draw();
+	test_graph->drawNodes();
 
 	if(showHelp)
 		helpGui.draw();
@@ -79,6 +82,7 @@ void ofApp::keyPressed(int key)
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key)
 {
+	// GUI toggling
 	if (key == OF_KEY_TAB)
 	{
 		if (showHelp && showSettings && showResults)
@@ -109,7 +113,6 @@ void ofApp::keyReleased(int key)
 		showSettings = !showSettings;
 	else if (key == 'r' || key == 'R')
 		showResults = !showResults;
-
 }
 
 //--------------------------------------------------------------

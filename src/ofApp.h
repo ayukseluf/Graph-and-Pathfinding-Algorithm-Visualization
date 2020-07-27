@@ -1,25 +1,22 @@
 #pragma once
 
-#include "ofMain.h"
+#include "ofMain.h" // Required library
 #include "ofxGui.h" // Required addon
-
-#include "Node.h"
-
-#include<map>
-#include<utility>
-#include<iostream>
+#include "Graph.h"
 
 class ofApp : public ofBaseApp{
 
+		Graph* test_graph = new Graph(500);
+
 		// Menu visibility
-		bool showAllMenus = true;
-		bool showHelp = true;
-		bool showSettings = true;
-		bool showResults = true;
+		bool showAllMenus;
+		bool showHelp;
+		bool showSettings;
+		bool showResults;
 
 		// Styling
-		float guiElementWidth = 250;
-		float guiElementHeight = 20;
+		float guiElementWidth;
+		float guiElementHeight;
 		
 		// Help Menu
 		ofxGuiGroup helpGui;
@@ -34,15 +31,15 @@ class ofApp : public ofBaseApp{
 		ofxLabel spacer1;
 		ofxLabel spacer2;
 		ofxLabel spacer3;
-		ofxLabel selectedCordLabel; // Displays selected node's coordinates.
-		ofxButton setSource; // Indicates selected node should be set as source when true.
-		ofxButton setTarget; // Indicates  selected node shoulb be set as target when true.
-		ofxButton locateSource; // Source should be highlighted when true.
-		ofxButton locateTarget; // Target should be highlighted when true.
-		ofxToggle stackOverflowNodes; // Indicates that 100k nodes should be drawn when true.
+		ofxLabel selectedCordLabel; // Displays selected node's coordinates
+		ofxButton setSource; // Indicates selected node should be set as source when true
+		ofxButton setTarget; // Indicates  selected node shoulb be set as target when true
+		ofxButton locateSource; // Source should be highlighted when true
+		ofxButton locateTarget; // Target should be highlighted when true
+		ofxToggle stackOverflowNodes; // Indicates that 100k nodes should be drawn when true
 
-		// These sliders double as primitve type variables. i.e. the totalNode variable should also
-		// be treated and used as an integer that stores the total number of nodes.
+		// These sliders double as primitve type variables. i.e. the totalNode variable can also
+		// be treated and used as an integer that stores the total number of nodes
 		ofxIntSlider totalNodes;  
 		ofxIntSlider sourceNode; 
 		ofxIntSlider targetNode; 
@@ -56,8 +53,6 @@ class ofApp : public ofBaseApp{
 		ofxLabel idealTimeLabel;
 		ofxLabel actualTimeLabel;
 		ofxLabel timeDeltaLabel;
-
-		std::map<int, Node*> map;
 		
 	public:
 		void setup();

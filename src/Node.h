@@ -1,17 +1,24 @@
 #pragma once
-#include "ofMain.h"
-#include <string>
 
-/* Temporary */
+#include "ofMain.h"
 
 class Node
 {
-	float x = ofRandom(5, 1915);
-	float y = ofRandom(5, 1075);
+	short ID;
+	float x, y;
 
 public:
-	string id = "temp";
-	void draw() const;
+
+	// Constructor
+	Node(short ID);
+
+	// Accessors
+	short getNodeID() const;
+	float getX() const;
+	float getY() const;
+
+	// 
+	void Draw() const;
 };
 
 
