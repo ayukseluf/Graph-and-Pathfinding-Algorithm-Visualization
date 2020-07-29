@@ -22,6 +22,11 @@ float Node::getY() const
 	return y;
 }
 
+std::vector< pair<short, short> > Node::getAdjacentNodes() const
+{
+	return this->adjacentNodes;
+}
+
 void Node::Draw() const
 {
 	ofFill();
