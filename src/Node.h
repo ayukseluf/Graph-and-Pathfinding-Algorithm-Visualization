@@ -5,20 +5,20 @@
 
 class Node
 {
-	std::vector< pair< short, short > > adjacentNodes;
-	short ID;
+	std::vector< pair< unsigned int, short > > adjacentNodes;
+	unsigned int ID;
 	float x, y;
 
 public:
 
 	// Constructor
-	Node(short ID);
+	Node(unsigned int ID);
 
 	// Accessors
 	short getNodeID() const;
 	float getX() const;
 	float getY() const;
-	std::vector< pair< short, short > > getAdjacentNodes() const;
+	std::vector< pair< unsigned int, short > > getAdjacentNodes() const;
 
 	// 
 	void Draw() const;
