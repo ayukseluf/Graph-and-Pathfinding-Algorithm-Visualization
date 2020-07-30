@@ -7,7 +7,7 @@ Node::Node(unsigned int ID)
 	y = ofRandom(5, ofGetHeight() - 5);
 }
 
-short Node::getNodeID() const
+unsigned int Node::getNodeID() const
 {
 	return ID;
 }

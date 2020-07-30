@@ -60,7 +60,7 @@ class ofApp : public ofBaseApp
 	ofxLabel timeDeltaLabel;
 
 	// Helper functions
-	void generateGraph(short totalNodes);
+	void generateGraph(unsigned int totalNodes);
 	string makeSelectedCordLabel() const;
 
 	// Core OF functions

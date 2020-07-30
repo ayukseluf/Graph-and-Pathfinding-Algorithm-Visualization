@@ -77,7 +77,7 @@ void ofApp::draw() // Code not directly related to drawing should be placed in t
 }
 
 //--------------------------------------------------------------
-void ofApp::generateGraph(short totalNodes)
+void ofApp::generateGraph(unsigned int totalNodes)
 {
 	if (graph)
 		delete graph;

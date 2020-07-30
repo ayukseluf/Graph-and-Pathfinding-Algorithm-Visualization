@@ -11,7 +11,7 @@ Graph::Graph(unsigned int nodeCount)
     // Generate edges - make sure to update the vector of edges for each node as well as push into edges vector for graph class
     for(unsigned int i = 0; i < nodes.size(); i++)
     {
-        
+
     }
 }
 
@@ -27,7 +27,7 @@ unsigned int Graph::getSelectedNodeID(float x, float y) const
     return -1;
 }
 
-std::pair<float, float> Graph::getCordsFromID(short nodeID) const
+std::pair<float, float> Graph::getCordsFromID(unsigned int nodeID) const
 {
     return std::make_pair(nodes[nodeID].getX(), nodes[nodeID].getY());
 }

@@ -3,7 +3,7 @@
 class Edge
 {
     private:
-        unsigned int int fromID, toID;
+        unsigned int fromID, toID;
         short weight, edgeID;
     
     public:

@@ -20,7 +20,7 @@ class Graph
 
         // Accessors
         unsigned int getSelectedNodeID(float x, float y) const;
-        std::pair<float,float> getCordsFromID(short nodeID) const;
+        std::pair<float,float> getCordsFromID(unsigned int nodeID) const;
 
         // Helper Functions
         void drawNodes() const;

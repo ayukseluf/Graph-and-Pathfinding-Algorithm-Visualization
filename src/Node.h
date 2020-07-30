@@ -15,7 +15,7 @@ public:
 	Node(unsigned int ID);
 
 	// Accessors
-	short getNodeID() const;
+	unsigned int getNodeID() const;
 	float getX() const;
 	float getY() const;
 	std::vector< pair< unsigned int, short > > getAdjacentNodes() const;
