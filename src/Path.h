@@ -6,9 +6,9 @@
 class Path
 {
     private:
-        short sourceNodeID;
+        unsigned int sourceNodeID;
         std::vector<Edge> edgesToDestination;
 
     public:
-        Path(short sourceNodeID, std::vector<Edge> &edgesToDestination);
+        Path(unsigned int sourceNodeID, std::vector<Edge> &edgesToDestination);
 };

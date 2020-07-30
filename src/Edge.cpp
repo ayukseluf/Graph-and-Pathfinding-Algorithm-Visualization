@@ -1,6 +1,6 @@
 #include "Edge.h"
 
-Edge::Edge(short from, short to, short weight, short ID)
+Edge::Edge(unsigned int from, unsigned int to, short weight, short ID)
 {
     this->fromID = fromID;
     this->toID = toID;

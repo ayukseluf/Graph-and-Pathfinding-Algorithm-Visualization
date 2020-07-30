@@ -1,19 +1,22 @@
 #include "Graph.h"
 
-Graph::Graph(short nodeCount)
+Graph::Graph(unsigned int nodeCount)
 {
     this->nodeCount = nodeCount;
 
     // Generate nodes
-    for (short i = 0; i < nodeCount; ++i)
+    for (unsigned int i = 0; i < nodeCount; ++i)
         nodes.push_back(Node(i));
 
     // Generate edges - make sure to update the vector of edges for each node as well as push into edges vector for graph class
-
+    for(unsigned int i = 0; i < nodes.size(); i++)
+    {
+        
+    }
 }
 
 // Returns ID of node at (x,y) or -1 if not found
-short Graph::getSelectedNodeID(float x, float y) const
+unsigned int Graph::getSelectedNodeID(float x, float y) const
 {
     for (Node n : nodes)
     {

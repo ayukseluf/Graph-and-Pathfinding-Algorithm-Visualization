@@ -3,11 +3,12 @@
 class Edge
 {
     private:
-        short fromID, toID, weight, edgeID;
+        unsigned int int fromID, toID;
+        short weight, edgeID;
     
     public:
         // Constructor
-        Edge(short fromID, short toID, short weight, short edgeID);
+        Edge(unsigned int fromID, unsigned int toID, short weight, short edgeID);
 
         // Accessors
         short getEdgeID() const;

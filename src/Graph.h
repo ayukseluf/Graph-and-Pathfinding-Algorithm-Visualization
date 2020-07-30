@@ -9,17 +9,17 @@
 class Graph
 {
     private:
-        short nodeCount;
+        unsigned int nodeCount;
         std::vector<Node> nodes; // Nodes indexed by ID
         std::vector<Edge> edgesInGraph; // Initialized in graph generation
         std::vector<Path> paths; // EMPTY until Djikstra called
 
     public:
         // Constructor
-        Graph(short nodeCount);
+        Graph(unsigned int nodeCount);
 
         // Accessors
-        short getSelectedNodeID(float x, float y) const;
+        unsigned int getSelectedNodeID(float x, float y) const;
         std::pair<float,float> getCordsFromID(short nodeID) const;
 
         // Helper Functions
