@@ -1,6 +1,6 @@
 #include "Node.h"
 
-Node::Node(short ID)
+Node::Node(unsigned int ID)
 {
 	this->ID = ID;
 	x = ofRandom(5, ofGetWidth() - 5);
@@ -22,7 +22,7 @@ float Node::getY() const
 	return y;
 }
 
-std::vector< pair<short, short> > Node::getAdjacentNodes() const
+std::vector< pair<unsigned int, short> > Node::getAdjacentNodes() const
 {
 	return this->adjacentNodes;
 }
