@@ -4,6 +4,9 @@
 
 void ofApp::setup()
 {
+	graph = nullptr;
+	generateGraph(1000);
+	
 	// Intialization
 	showAllMenus = true;
 	showHelp = true;
@@ -17,7 +20,7 @@ void ofApp::setup()
 	ofxGuiSetDefaultWidth(guiElementWidth);
 	ofxGuiSetDefaultHeight(guiElementHeight);
 
-	// Help GUI
+	// Help Gui
 	helpGui.setup("Help");
 	helpGui.setPosition(ofGetWidth() - guiElementWidth - 5, 190);
 	helpGui.add(keyBinding1.setup("Toggle All", "     tab"));
@@ -26,27 +29,27 @@ void ofApp::setup()
 	helpGui.add(keyBinding4.setup("Toggle Results", " r"));
 	helpGui.add(keyBinding5.setup("Quit","           esc"));
 
-	// Settings GUI
+	// Settings Gui
 	settingsGui.setup("Settings");
 	settingsGui.setPosition(ofGetWidth() - guiElementWidth - 5, 370);
-	settingsGui.add(totalNodes.setup("Total Nodes", 100, 10, 1000));
+	settingsGui.add(totalNodesSlider.setup("Total Nodes", totalNodes, 10, 1000));
 	settingsGui.add(stackOverflowNodes.setup("100k Nodes", false));
 	settingsGui.add(spacer1.setup("",""));
-	settingsGui.add(sourceNode.setup("Source Node ID", 2, 1, totalNodes));
+	settingsGui.add(sourceNodeSlider.setup("Source Node ID", 2, 0, totalNodes - 1));
 	settingsGui.add(locateSource.setup("Locate"));
-	settingsGui.add(targetNode.setup("Target Node ID", 10, 1, totalNodes));
+	settingsGui.add(targetNodeSlider.setup("Target Node ID", 10, 0, totalNodes - 1));
 	settingsGui.add(locateTarget.setup("Locate"));
 	settingsGui.add(spacer2.setup("", ""));
-	settingsGui.add(selectedNode.setup("Selected Node", 1, 1, totalNodes));
-	settingsGui.add(selectedCordLabel.setup("Coordinates","(X,Y)"));
+	settingsGui.add(selectedNodeSlider.setup("Selected Node", selectedNodeID, 0, totalNodes - 1));
+	settingsGui.add(selectedCordLabel.setup("Coordinates", makeSelectedCordLabel()));
 	settingsGui.add(setSource.setup("Set as Source"));
 	settingsGui.add(setTarget.setup("Set as Target"));
 	settingsGui.add(spacer3.setup("", ""));
-	settingsGui.add(animationSpeed.setup("Animation Speed", 1.0, .1, 10));
-	settingsGui.add(velocity.setup("Velocity", 20, .1, 100));
-	settingsGui.add(timeLimit.setup("Time Limit", 500, 1, 1000));
+	settingsGui.add(animationSpeedSlider.setup("Animation Speed", 1.0, .1, 10));
+	settingsGui.add(velocitySlider.setup("Velocity", 20, .1, 100));
+	settingsGui.add(timeLimitSlider.setup("Time Limit", 500, 1, 1000));
 
-	// Results GUI
+	// Results Gui
 	resultsGui.setup("Results");
 	resultsGui.setPosition(ofGetWidth() - guiElementWidth - 5, 770);
 	resultsGui.add(idealTimeLabel.setup("Ideal Time Taken","   0:00"));
@@ -63,7 +66,7 @@ void ofApp::update()
 //--------------------------------------------------------------
 void ofApp::draw() // Code not directly related to drawing should be placed in the update function
 {
-	test_graph->drawNodes();
+	graph->drawNodes();
 
 	if(showHelp)
 		helpGui.draw();
@@ -74,6 +77,29 @@ void ofApp::draw() // Code not directly related to drawing should be placed in t
 }
 
 //--------------------------------------------------------------
+void ofApp::generateGraph(short totalNodes)
+{
+	if (graph)
+		delete graph;
+
+	graph = new Graph(totalNodes);
+
+	this->totalNodes = totalNodes;
+	totalNodesSlider = totalNodes;
+	selectedNodeID = totalNodes / 4;
+	selectedNodeSlider = selectedNodeID;
+	selectedCordLabel = makeSelectedCordLabel();
+}
+
+//--------------------------------------------------------------
+// Must be called after adjusting selectedNodeID
+string ofApp::makeSelectedCordLabel() const
+{
+	return "(" + to_string((int)graph->getCordsFromID(selectedNodeID).first) + "," + to_string((int)graph->getCordsFromID(selectedNodeID).second) + ")";
+}
+
+
+//--------------------------------------------------------------
 void ofApp::keyPressed(int key)
 {
 	
@@ -82,7 +108,7 @@ void ofApp::keyPressed(int key)
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key)
 {
-	// GUI toggling
+	// Gui toggling
 	if (key == OF_KEY_TAB)
 	{
 		if (showHelp && showSettings && showResults)
@@ -113,6 +139,8 @@ void ofApp::keyReleased(int key)
 		showSettings = !showSettings;
 	else if (key == 'r' || key == 'R')
 		showResults = !showResults;
+	else if (key == 'n')
+		generateGraph(100); // TEMP
 }
 
 //--------------------------------------------------------------
@@ -136,7 +164,17 @@ void ofApp::mousePressed(int x, int y, int button)
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button)
 {
-
+	// Update selected node gui elements
+	if (button == 0) // Left mouse
+	{
+		short selected = graph->getSelectedNodeID(x, y);
+		if (selected != -1)
+		{
+			selectedNodeID = selected;
+			selectedCordLabel = makeSelectedCordLabel();
+			selectedNodeSlider = selectedNodeID;
+		}
+	}
 }
 
 //--------------------------------------------------------------

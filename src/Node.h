@@ -20,7 +20,7 @@ public:
 	float getY() const;
 	std::vector< pair< short, short > > getAdjacentNodes() const;
 
-	// 
+	// Helper Functions
 	void Draw() const;
 };
 

@@ -31,5 +31,5 @@ void Node::Draw() const
 {
 	ofFill();
 	ofSetColor(3, 218, 198);
-	ofDrawCircle(x, y, 2);
+	ofDrawCircle(x, y, 3);
 }
