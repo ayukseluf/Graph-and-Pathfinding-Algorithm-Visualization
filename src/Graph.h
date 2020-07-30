@@ -1,5 +1,6 @@
 #pragma once
 
+#include <utility>
 #include <vector>
 #include "Edge.h"
 #include "Path.h"
@@ -14,7 +15,14 @@ class Graph
         std::vector<Path> paths; // EMPTY until Djikstra called
 
     public:
+        // Constructor
         Graph(short nodeCount);
+
+        // Accessors
+        short getSelectedNodeID(float x, float y) const;
+        std::pair<float,float> getCordsFromID(short nodeID) const;
+
+        // Helper Functions
         void drawNodes() const;
         void Djikstra(Node node);
 };
