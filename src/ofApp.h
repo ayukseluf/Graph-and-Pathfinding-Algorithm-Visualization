@@ -35,6 +35,7 @@ class ofApp : public ofBaseApp
 	ofxLabel keyBinding5;
 	ofxLabel keyBinding6;
 	ofxLabel keyBinding7;
+	ofxLabel keyBinding8;
 	ofxLabel keyBindingLast;
 
 	// Settings menu
@@ -43,16 +44,19 @@ class ofApp : public ofBaseApp
 	ofxLabel spacer2;
 	ofxLabel spacer3;
 	ofxLabel selectedCordLabel; 
+	ofxButton _125NodeButton;
+	ofxButton _250NodeButton;
+	ofxButton _500NodeButton;
+	ofxButton _1000NodeButton;
+	ofxButton maxNodeButton; // 100,000 nodes
 	ofxButton setSourceButton;
 	ofxButton setTargetButton;
-	ofxToggle highlightSourceToggle; 
-	ofxToggle highlightTargetToggle; 
+	ofxToggle highlightSourceTargetToggle; 
 	ofxToggle highlightSelectedToggle;
-	ofxToggle stackOverflowNodesToggle; // Indicates that 100k nodes should be drawn when true
+	ofxToggle launchAnimationToggle;
 
 	// These sliders double as primitve type variables. i.e. the totalNode variable can also
 	// be treated and used as an integer that stores the total number of nodes
-	ofxIntSlider totalNodesSlider;
 	ofxIntSlider sourceNodeSlider;
 	ofxIntSlider targetNodeSlider;
 	ofxIntSlider selectedNodeSlider;
@@ -72,6 +76,11 @@ class ofApp : public ofBaseApp
 	void selectedNodeSliderChanged(int& selectedNode);
 	void setSourceButtonPressed();
 	void setTargetButtonPressed();
+	void _125NodeButtonPressed();
+	void _250NodeButtonPressed();
+	void _500NodeButtonPressed();
+	void _1000NodeButtonPressed();
+	void maxNodeButtonPressed();
 
 	// Helper Functions
 	void generateGraph(unsigned int totalNodes);

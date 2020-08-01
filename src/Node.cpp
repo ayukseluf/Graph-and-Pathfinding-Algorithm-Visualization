@@ -29,7 +29,5 @@ std::vector< pair<unsigned int, short> > Node::getAdjacentNodes() const
 
 void Node::Draw() const
 {
-	ofFill();
-	ofSetColor(3, 218, 198);
 	ofDrawCircle(x, y, 3);
 }

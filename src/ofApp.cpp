@@ -3,7 +3,7 @@
 void ofApp::setup()
 {
 	graph = nullptr;
-	generateGraph(1000);
+	generateGraph(500);
 	
 	// Intialization
 	showAllMenus = true;
@@ -12,6 +12,7 @@ void ofApp::setup()
 	showResults = true;
 
 	// Styling // TODO: need to scale gui with window size
+	ofFill();
 	ofBackground(80);
 	guiElementWidth = 250; 
 	guiElementHeight = 20;
@@ -24,6 +25,11 @@ void ofApp::setup()
 	selectedNodeSlider.addListener(this, &ofApp::selectedNodeSliderChanged);
 	setSourceButton.addListener(this, &ofApp::setSourceButtonPressed);
 	setTargetButton.addListener(this, &ofApp::setTargetButtonPressed);
+	_125NodeButton.addListener(this, &ofApp::_125NodeButtonPressed);
+	_250NodeButton.addListener(this, &ofApp::_250NodeButtonPressed);
+	_500NodeButton.addListener(this, &ofApp::_500NodeButtonPressed);
+	_1000NodeButton.addListener(this, &ofApp::_1000NodeButtonPressed);
+	maxNodeButton.addListener(this, &ofApp::maxNodeButtonPressed);
 
 	// Help Gui
 	helpGui.setup("Help");
@@ -32,21 +38,24 @@ void ofApp::setup()
 	helpGui.add(keyBinding2.setup("Toggle Help", "    h"));
 	helpGui.add(keyBinding3.setup("Toggle Settings", "s"));
 	helpGui.add(keyBinding4.setup("Toggle Results", " r"));
-	helpGui.add(keyBinding5.setup("Selected Node", "left / right"));
+	helpGui.add(keyBinding5.setup("Selected Node", "  left / right"));
 	helpGui.add(keyBinding6.setup("Set Source Node", "up"));
 	helpGui.add(keyBinding7.setup("Set Target Node", "down"));
+	helpGui.add(keyBinding8.setup("Start Animation", "enter"));
 	helpGui.add(keyBindingLast.setup("Quit","           esc"));
 
 	// Settings Gui
 	settingsGui.setup("Settings");
 	settingsGui.setPosition(ofGetWidth() - guiElementWidth - 5, 370);
-	settingsGui.add(totalNodesSlider.setup("Total Nodes", totalNodes, 10, 1000));
-	settingsGui.add(stackOverflowNodesToggle.setup("100k Nodes", false));
+	settingsGui.add(_125NodeButton.setup("125 Nodes"));
+	settingsGui.add(_250NodeButton.setup("250 Nodes"));
+	settingsGui.add(_500NodeButton.setup("500 Nodes"));
+	settingsGui.add(_1000NodeButton.setup("1,000 Nodes"));
+	settingsGui.add(maxNodeButton.setup("100,000 Nodes (No Graphics)"));
 	settingsGui.add(spacer1.setup("",""));
 	settingsGui.add(sourceNodeSlider.setup("Source Node ID", sourceNodeID, 0, totalNodes - 1));
-	settingsGui.add(highlightSourceToggle.setup("Highlight", false));
 	settingsGui.add(targetNodeSlider.setup("Target Node ID", targetNodeID, 0, totalNodes - 1));
-	settingsGui.add(highlightTargetToggle.setup("Highlight", false));
+	settingsGui.add(highlightSourceTargetToggle.setup("Highlight", false));
 	settingsGui.add(spacer2.setup("", ""));
 	settingsGui.add(selectedNodeSlider.setup("Selected Node", selectedNodeID, 0, totalNodes - 1));
 	settingsGui.add(selectedCordLabel.setup("Coordinates", makeSelectedCordLabel()));
@@ -57,10 +66,11 @@ void ofApp::setup()
 	settingsGui.add(animationSpeedSlider.setup("Animation Speed", 1.0, .1, 10));
 	settingsGui.add(velocitySlider.setup("Velocity", 20, .1, 100));
 	settingsGui.add(timeLimitSlider.setup("Time Limit", 500, 1, 1000));
+	settingsGui.add(launchAnimationToggle.setup("Launch Animation", false));
 
 	// Results Gui
 	resultsGui.setup("Results");
-	resultsGui.setPosition(ofGetWidth() - guiElementWidth - 5, 770);
+	resultsGui.setPosition(ofGetWidth() - guiElementWidth - 5, 900);
 	resultsGui.add(idealTimeLabel.setup("Ideal Time Taken","   0:00"));
 	resultsGui.add(actualTimeLabel.setup("Actual Time Taken","  0:00"));
 	resultsGui.add(timeDeltaLabel.setup("Inefficiency Delta", " 0:00"));
@@ -68,23 +78,35 @@ void ofApp::setup()
 
 void ofApp::update()
 {
-
+	if(totalNodes == 100000) // Force highlighters on for 100k nodes
+	{
+		highlightSourceTargetToggle = true;
+		highlightSelectedToggle = true;
+	}
 }
 
 void ofApp::draw()
 {
-	graph->drawNodes();
+	// Graph
+	ofSetColor(3, 218, 198);
+	if(totalNodes < 100000)
+		graph->drawNodes();
 
-	ofSetColor(0, 255, 0);
-	if (highlightSourceToggle)
-		drawArrow(graph->getCordsFromID(sourceNodeID), "From");
-	ofSetColor(255, 0, 0);
-	if (highlightTargetToggle)
+	// Highlighters
+	if (highlightSourceTargetToggle)
+	{
+		ofSetColor(255, 0, 0);
 		drawArrow(graph->getCordsFromID(targetNodeID), "To");
-	ofSetColor(255, 255, 0);
+		ofSetColor(0, 255, 0);
+		drawArrow(graph->getCordsFromID(sourceNodeID), "From");
+	}
 	if (highlightSelectedToggle)
-		drawArrow(graph->getCordsFromID(selectedNodeID), "Selected");
+	{
+		ofSetColor(255, 255, 0);
+		drawArrow(graph->getCordsFromID(selectedNodeID), "");
+	}
 
+	// Menus
 	if(showHelp)
 		helpGui.draw();
 	if(showSettings)
@@ -100,12 +122,10 @@ void ofApp::sourceNodeSliderChanged(int& sourceNode)
 	sourceNodeID = sourceNode;
 }
 
-
 void ofApp::targetNodeSliderChanged(int& targetNode)
 {
 	targetNodeID = targetNode;
 }
-
 
 void ofApp::selectedNodeSliderChanged(int& selectedNode)
 {
@@ -113,16 +133,38 @@ void ofApp::selectedNodeSliderChanged(int& selectedNode)
 	selectedCordLabel = makeSelectedCordLabel();
 }
 
-
 void ofApp::setSourceButtonPressed()
 {
 	sourceNodeSlider = selectedNodeID;
 }
 
-
 void ofApp::setTargetButtonPressed()
 {
 	targetNodeSlider = selectedNodeID;
+}
+
+void ofApp::_125NodeButtonPressed()
+{
+	generateGraph(125);
+}
+
+void ofApp::_250NodeButtonPressed()
+{
+	generateGraph(250);
+}
+void ofApp::_500NodeButtonPressed()
+{
+	generateGraph(500);
+}
+
+void ofApp::_1000NodeButtonPressed()
+{
+	generateGraph(1000);
+}
+
+void ofApp::maxNodeButtonPressed()
+{
+	generateGraph(100000);
 }
 
 // --------------------------- Helper Functions ---------------------------
@@ -133,7 +175,6 @@ void ofApp::generateGraph(unsigned int numNodes)
 	graph = new Graph(numNodes);
 	
 	totalNodes = numNodes;
-	totalNodesSlider = totalNodes;
 
 	sourceNodeSlider.setMax(totalNodes - 1);
 	sourceNodeID = totalNodes / 4;
@@ -154,15 +195,32 @@ string ofApp::makeSelectedCordLabel() const
 	return "(" + to_string((int)graph->getCordsFromID(selectedNodeID).first) + "," + to_string((int)graph->getCordsFromID(selectedNodeID).second) + ")";
 }
 
+// Draws a labeled arrow at passed coordinates. Draws unlabeled rectangular arrow if passed "". Otherwise pass "From" or "To".
 void ofApp::drawArrow(std::pair<float, float> nodeCords, string label) const
 {
-	const float r = 3.0 * 4.5; // node radius * size multiplier
-	//ofSetLineWidth(2*r); // squared arrows
-	ofSetLineWidth(r);
-	ofDrawTriangle(nodeCords.first, nodeCords.second - .5 * r, nodeCords.first + r, nodeCords.second - 1.5 * r, nodeCords.first - r, nodeCords.second - 1.5 * r);
-	ofDrawLine(nodeCords.first, nodeCords.second - 1.5 * r, nodeCords.first, nodeCords.second - 2.5 * r);
-	ofSetColor(255);
-	ofDrawBitmapString(label, nodeCords.first - 4 * label.length(), nodeCords.second - 3 * r);
+	float yOffset = 1;
+	if (nodeCords.second <= 35.0) // Flip y axis if close to top
+		yOffset = -1;
+
+	ofDrawTriangle(nodeCords.first, nodeCords.second - 6.75 * yOffset, nodeCords.first + 13.5, nodeCords.second - 20.25 * yOffset, nodeCords.first - 13.5, nodeCords.second - 20.25 * yOffset);
+	
+	if (label == "") // Rectangular arrow
+	{
+		ofDrawRectangle(nodeCords.first - 13.5, nodeCords.second - 33.75 * yOffset, 27, 13.5 * yOffset);
+	}
+
+	else // Labeled arrow
+	{
+		ofSetLineWidth(13.5);
+		ofDrawLine(nodeCords.first, nodeCords.second - 20.25 * yOffset, nodeCords.first, nodeCords.second - 33.75 * yOffset);
+		ofSetColor(255);
+		if (yOffset == -1) // Adjust for reversed text if close to top
+			yOffset = -1.2;
+		if(sourceNodeID == targetNodeID && label == "From") // Offset labels if both on same node
+			ofDrawBitmapString(label, nodeCords.first - 4 * label.length(), nodeCords.second - 52.5 * yOffset);
+		else
+			ofDrawBitmapString(label, nodeCords.first - 4 * label.length(), nodeCords.second - 40.5 * yOffset);
+	}
 }
 
 // -------------------------------- Events --------------------------------
@@ -217,8 +275,8 @@ void ofApp::keyReleased(int key)
 		showResults = !showResults;
 
 	// Run visualization
-	else if (key == OF_KEY_RETURN)
-		generateGraph(100); // TEMPORARY
+	/*else if (key == OF_KEY_RETURN) // TODO
+		generateGraph(100); */
 }	
 
 void ofApp::mouseMoved(int x, int y)
