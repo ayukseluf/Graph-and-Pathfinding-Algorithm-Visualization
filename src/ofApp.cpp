@@ -3,7 +3,7 @@
 void ofApp::setup()
 {
 	graph = nullptr;
-	generateGraph(500);
+	generateGraph(500, "data/500-A.txt");
 	
 	// Intialization
 	showAllMenus = true;
@@ -145,34 +145,34 @@ void ofApp::setTargetButtonPressed()
 
 void ofApp::_125NodeButtonPressed()
 {
-	generateGraph(125);
+	generateGraph(125, "data/125-A.txt");
 }
 
 void ofApp::_250NodeButtonPressed()
 {
-	generateGraph(250);
+	generateGraph(250, "data/250-A.txt");
 }
 void ofApp::_500NodeButtonPressed()
 {
-	generateGraph(500);
+	generateGraph(500, "data/500-A.txt");
 }
 
 void ofApp::_1000NodeButtonPressed()
 {
-	generateGraph(1000);
+	generateGraph(1000, "data/1000-A.txt");
 }
 
 void ofApp::maxNodeButtonPressed()
 {
-	generateGraph(100000);
+	generateGraph(100000, "/data/125-A.txt");
 }
 
 // --------------------------- Helper Functions ---------------------------
 
-void ofApp::generateGraph(unsigned int numNodes)
+void ofApp::generateGraph(unsigned int numNodes, string fileName)
 {
 	delete graph;
-	graph = new Graph(numNodes);
+	graph = new Graph(numNodes, fileName);
 	
 	totalNodes = numNodes;
 

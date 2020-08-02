@@ -16,13 +16,14 @@ class Graph
 
     public:
         // Constructor
-        Graph(unsigned int nodeCount);
+        Graph(unsigned int nodeCount, string fileName);
 
         // Accessors
         unsigned int getSelectedNodeID(float x, float y) const;
         std::pair<float,float> getCordsFromID(unsigned int nodeID) const;
 
         // Helper Functions
+        void loadEdges(string fileName);
         void drawNodes() const;
         void Djikstra(Node node);
 };

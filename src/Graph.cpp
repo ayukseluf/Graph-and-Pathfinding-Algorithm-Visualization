@@ -1,6 +1,7 @@
 #include "Graph.h"
-
-Graph::Graph(unsigned int nodeCount)
+#include <fstream>
+#include <sstream>
+Graph::Graph(unsigned int nodeCount, string fileName)
 {
     this->nodeCount = nodeCount;
 
@@ -8,13 +9,33 @@ Graph::Graph(unsigned int nodeCount)
     for (unsigned int i = 0; i < nodeCount; i++)
         nodes.push_back(Node(i));
 
-    // Generate edges - make sure to update the vector of edges for each node as well as push into edges vector for graph class
-    for(unsigned int i = 0; i < nodes.size(); i++)
-    {
+    // Read Edges from file
+    loadEdges(fileName);
 
+}
+void Graph::loadEdges(string fileName) {
+    ifstream file(fileName);
+    string row, fromIDString, toIDString, weightString;
+    unsigned int fromID, toID;
+    short weight;
+    short edgeID = 0;
+    cout << "In load function" << endl;
+    if (file.is_open()) {
+        cout << "In File" << endl;
+        while (getline(file, row)) {
+            stringstream edgeData(row);
+            getline(edgeData, fromIDString, ' ');
+            fromID = stoi(fromIDString);
+            getline(edgeData, toIDString, ' ');
+            toID = stoi(toIDString);
+            getline(edgeData, weightString, ' ');
+            weight = stoi(weightString);
+            nodes[fromID].setAdjacentNodes(toID, weight);
+            Edge edge(fromID, toID, weight, edgeID);
+            edgesInGraph.push_back(edge);
+        }
     }
 }
-
 // Returns ID of node at (x,y) or -1 if not found
 unsigned int Graph::getSelectedNodeID(float x, float y) const
 {

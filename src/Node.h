@@ -20,6 +20,9 @@ public:
 	float getY() const;
 	std::vector< pair< unsigned int, short > > getAdjacentNodes() const;
 
+	//Mutators
+	void setAdjacentNodes(unsigned int toID, short weight);
+
 	// Helper Functions
 	void Draw() const;
 };

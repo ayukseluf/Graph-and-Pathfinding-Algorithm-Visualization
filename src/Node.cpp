@@ -27,6 +27,10 @@ std::vector< pair<unsigned int, short> > Node::getAdjacentNodes() const
 	return this->adjacentNodes;
 }
 
+void Node::setAdjacentNodes(unsigned int toID, short weight) {
+	adjacentNodes.push_back(make_pair(toID, weight));
+}
+
 void Node::Draw() const
 {
 	ofDrawCircle(x, y, 3);

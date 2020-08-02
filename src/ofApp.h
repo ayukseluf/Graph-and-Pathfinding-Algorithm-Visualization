@@ -83,7 +83,7 @@ class ofApp : public ofBaseApp
 	void maxNodeButtonPressed();
 
 	// Helper Functions
-	void generateGraph(unsigned int totalNodes);
+	void generateGraph(unsigned int totalNodes, string fileName);
 	string makeSelectedCordLabel() const;
 	void drawArrow(std::pair<float, float> nodeCords, string label) const;
 
