@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <string>
+#include <vector> // TEMP
+#include <map> // TEMP
 #include "ofMain.h" // Required library
 #include "ofxGui.h" // Required addon
 #include "Graph.h"
@@ -10,6 +12,10 @@ class ofApp : public ofBaseApp
 {
 	Graph* graph;
 
+	// TEMP
+	map<unsigned int, vector<unsigned int>> map;
+	void printData();
+	
 	// Menu values
 	unsigned int totalNodes;
 	unsigned int selectedNodeID;

@@ -9,10 +9,11 @@ Graph::Graph(unsigned int nodeCount)
         nodes.push_back(Node(i));
 
     // Generate edges - make sure to update the vector of edges for each node as well as push into edges vector for graph class
-    for(unsigned int i = 0; i < nodes.size(); i++)
+    for (unsigned int i = 0; i < nodes.size(); i++)
     {
 
     }
+
 }
 
 // Returns ID of node at (x,y) or -1 if not found

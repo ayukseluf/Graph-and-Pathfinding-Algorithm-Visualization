@@ -15,6 +15,7 @@ class Graph
         std::vector<Path> paths; // EMPTY until Djikstra called
 
     public:
+
         // Constructor
         Graph(unsigned int nodeCount);
 

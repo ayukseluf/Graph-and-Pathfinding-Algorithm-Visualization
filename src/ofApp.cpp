@@ -11,7 +11,7 @@ void ofApp::setup()
 	showSettings = true;
 	showResults = true;
 
-	// Styling // TODO: need to scale gui with window size
+	// Styling
 	ofFill();
 	ofBackground(80);
 	guiElementWidth = 250; 
@@ -85,12 +85,34 @@ void ofApp::update()
 	}
 }
 
+// --- TEMP
+void ofApp::printData()
+{
+	std::cout << "fromID, x, y, toID, weight, toID, weight, ... " << std::endl;
+	string str = "";
+	for (auto it = map.begin(); it != map.end(); it++)
+	{
+		str = to_string(it->first) + " " + to_string(graph->getCordsFromID(it->first).first) + " " + to_string(graph->getCordsFromID(it->first).second);
+		for (unsigned int i : it->second)
+			str += " " + to_string(i) + " " + to_string(ofDist(graph->getCordsFromID(it->first).first, graph->getCordsFromID(it->first).second, graph->getCordsFromID(i).first, graph->getCordsFromID(i).second));
+		std::cout << str << std::endl;
+	}
+}
+
 void ofApp::draw()
 {
 	// Graph
 	ofSetColor(3, 218, 198);
 	if(totalNodes < 100000)
 		graph->drawNodes();
+
+	// TEMP
+	ofSetLineWidth(2);
+	for (auto it = map.begin(); it != map.end(); it++)
+	{
+		for (unsigned int i : it->second)
+			ofDrawLine(graph->getCordsFromID(it->first).first, graph->getCordsFromID(it->first).second, graph->getCordsFromID(i).first, graph->getCordsFromID(i).second);
+	}
 
 	// Highlighters
 	if (highlightSourceTargetToggle)
@@ -277,6 +299,12 @@ void ofApp::keyReleased(int key)
 	// Run visualization
 	/*else if (key == OF_KEY_RETURN) // TODO
 		generateGraph(100); */
+
+		// TEMP
+	else if (key == 'e' || key == 'E')
+		map[sourceNodeID].push_back(targetNodeID);
+	else if (key == 'd' || key == 'D')
+		printData();
 }	
 
 void ofApp::mouseMoved(int x, int y)
@@ -303,6 +331,8 @@ void ofApp::mouseReleased(int x, int y, int button)
 		if (selected != -1)
 			selectedNodeSlider = selected;
 	}
+
+	
 }
 
 void ofApp::mouseEntered(int x, int y)

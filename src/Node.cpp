@@ -7,6 +7,13 @@ Node::Node(unsigned int ID)
 	y = ofRandom(5, ofGetHeight() - 5);
 }
 
+Node::Node(unsigned int ID, float x, float y)
+{
+	this->ID = ID;
+	this->x = x;
+	this->y = y;
+}
+
 unsigned int Node::getNodeID() const
 {
 	return ID;
