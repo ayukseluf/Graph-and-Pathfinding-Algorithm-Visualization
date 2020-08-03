@@ -32,6 +32,7 @@ Graph::Graph(unsigned int nodeCount, string fileName)
             getline(edgeData, targetWeight, ' ');
             nodes[stoi(sourceID)].setAdjacentNodes(stoi(targetID), stof(targetWeight));
             edgesInGraph.push_back(Edge(stoi(sourceID), stoi(targetID), stof(targetWeight), nextEdgeID));
+            nodes[stoi(sourceID)].setAdjacentEdges(edgesInGraph[nextEdgeID]);
             nextEdgeID++;
         }
     }
@@ -46,6 +47,7 @@ Graph::Graph(unsigned int nodeCount, string fileName)
                 nodes[to.first].setAdjacentNodes(from.getNodeID(), to.second);
         }
     }
+
 
 }
 
@@ -78,7 +80,20 @@ void Graph::drawEdges() const
         ofDrawLine(getCordsFromID(e.getFrom()).first, getCordsFromID(e.getFrom()).second, getCordsFromID(e.getTo()).first, getCordsFromID(e.getTo()).second);
 }
 
-void Graph::Djikstra(Node node)
+void Graph::Dijkstra(Node node)
 {
+    //visited will start empty and unvisited will be full
+    vector <Node> visited;
+    vector <Node> unvisited = nodes;
+
+    //First Initialize distance vector to a max value, and vectors holding previous nodes and edges to -1
+    for (unsigned int i = 0; i < nodes.size(); i++) {
+        distances[i] = 1000000000;
+        predecessorNodesID[i] = -1;
+        predecessorEdgesID[i] = -1;
+    }
+
+    while (unvisited.begin() != unvisited.end()) {
     
+    }
 }

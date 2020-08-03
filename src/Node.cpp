@@ -21,7 +21,9 @@ float Node::getY() const
 {
 	return y;
 }
-
+vector<Edge> Node::getAdjacentEdges() const {
+	return this->adjacentEdges;
+}
 std::vector< pair<unsigned int, float> > Node::getAdjacentNodes() const
 {
 	return this->adjacentNodes;
@@ -30,6 +32,10 @@ std::vector< pair<unsigned int, float> > Node::getAdjacentNodes() const
 void Node::setAdjacentNodes(unsigned int toID, float weight) 
 {
 	adjacentNodes.push_back(make_pair(toID, weight));
+}
+
+void Node::setAdjacentEdges(Edge edge) {
+	adjacentEdges.push_back(edge);
 }
 
 void Node::Draw() const

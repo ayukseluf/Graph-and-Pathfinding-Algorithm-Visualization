@@ -14,7 +14,9 @@ class Graph
         unsigned int nodeCount;
         std::vector<Node> nodes; // Nodes indexed by ID
         std::vector<Edge> edgesInGraph; // Initialized in graph generation
-        std::vector<Path> paths; // EMPTY until Djikstra called
+        std::vector<int> predecessorNodesID;
+        std::vector<unsigned int> distances;
+        std::vector<int> predecessorEdgesID;
       
     public:
         // Constructor
@@ -27,5 +29,5 @@ class Graph
         // Helper Functions
         void drawNodes() const;
         void drawEdges() const;
-        void Djikstra(Node node);
+        void Dijkstra(Node node);
 };
