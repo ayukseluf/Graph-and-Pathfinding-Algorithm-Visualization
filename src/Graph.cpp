@@ -5,42 +5,52 @@
 Graph::Graph(unsigned int nodeCount, string fileName)
 {
     this->nodeCount = nodeCount;
-
-    // Read edges and nodes from file
-    loadEdges(fileName);
+    load(fileName);
 }
-
-void Graph::loadEdges(string fileName) {
-    ifstream file(fileName);
-    string row, fromIDString, xString, yString, toIDString, weightString;
-    unsigned int fromID, toID;
-    short weight;
-    short edgeID = 0;
-    float x, y;
-    std::cout << "In load function" << std::endl;
-    if (file.is_open()) {
-        std::cout << "In File" << std::endl;
-        while (getline(file, row)) {
-            stringstream edgeData(row);
-            getline(edgeData, fromIDString, ' ');
-            fromID = stoi(fromIDString);
-            getline(edgeData, xString, ' ');
-            x = stoi(xString);
-            getline(edgeData, yString, ' ');
-            y = stoi(yString);
-            
-            while (getline(edgeData, toIDString, ' '))
-            {
-                toID = stoi(toIDString);
-                getline(edgeData, weightString, ' ');
-                weight = stoi(weightString);
-                nodes.push_back(Node(fromID, x, y));
-                nodes[fromID].setAdjacentNodes(toID, weight);
-                Edge edge(fromID, toID, weight, edgeID);
-                edgesInGraph.push_back(edge);
-            }
+ 
+void Graph::load(string fileName)
+{
+    // Read data and build nodes
+    std::ifstream file(fileName);
+    string line = "";
+    while (getline(file, line))
+    {
+        // Load source node's ID and coordinates
+        stringstream edgeData(line);
+        string sourceID = "";
+        getline(edgeData, sourceID, ' ');
+        string sourceX = "";
+        getline(edgeData, sourceX, ' ');
+        string sourceY = "";
+        getline(edgeData, sourceY, ' ');
+        
+        // Construct source node
+        nodes.push_back(Node(stoi(sourceID), stof(sourceX), stof(sourceY)));
+        
+        // Load source node's adjacency list
+        string targetID = "";
+        string targetWeight = "";
+        while (getline(edgeData, targetID, ' '))
+        {
+            getline(edgeData, targetWeight, ' ');
+            nodes[nodes.size() - 1].setAdjacentNodes(stoi(targetID), stof(targetWeight));
         }
     }
+   
+    // Build edges
+    short nextEdgeID = 0;
+    for (Node from : nodes)
+    {
+        for (pair< unsigned int, float > to : from.getAdjacentNodes())
+        {
+            edgesInGraph.push_back(Edge(from.getNodeID(), to.first, to.second, nextEdgeID)); // Edge(fromID, toID, weight, edgeID)
+            nextEdgeID++;
+        }
+    }
+
+    // Verify graph is undirected by ensuring that each source node is in each of it's target nodes adjacentNodes list
+    // TODO
+
 }
 
 // Returns ID of node at (x,y) or -1 if not found

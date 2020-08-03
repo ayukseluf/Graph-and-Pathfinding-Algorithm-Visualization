@@ -13,7 +13,7 @@ class Graph
         std::vector<Node> nodes; // Nodes indexed by ID
         std::vector<Edge> edgesInGraph; // Initialized in graph generation
         std::vector<Path> paths; // EMPTY until Djikstra called
-
+      
     public:
         // Constructor
         Graph(unsigned int nodeCount, string fileName);
@@ -23,7 +23,7 @@ class Graph
         std::pair<float,float> getCordsFromID(unsigned int nodeID) const;
 
         // Helper Functions
-        void loadEdges(string fileName);
+        void load(string fileName);
         void drawNodes() const;
         void drawEdges() const;
         void Djikstra(Node node);

@@ -22,12 +22,13 @@ float Node::getY() const
 	return y;
 }
 
-std::vector< pair<unsigned int, short> > Node::getAdjacentNodes() const
+std::vector< pair<unsigned int, float> > Node::getAdjacentNodes() const
 {
 	return this->adjacentNodes;
 }
 
-void Node::setAdjacentNodes(unsigned int toID, short weight) {
+void Node::setAdjacentNodes(unsigned int toID, float weight) 
+{
 	adjacentNodes.push_back(make_pair(toID, weight));
 }
 
