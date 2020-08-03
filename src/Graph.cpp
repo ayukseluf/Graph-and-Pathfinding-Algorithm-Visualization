@@ -80,7 +80,7 @@ void Graph::drawEdges() const
         ofDrawLine(getCordsFromID(e.getFrom()).first, getCordsFromID(e.getFrom()).second, getCordsFromID(e.getTo()).first, getCordsFromID(e.getTo()).second);
 }
 
-void Graph::Dijkstra(Node node)
+void Graph::Dijkstra(unsigned int sourceID)
 {
     //visited will start empty and unvisited will be full
     vector <Node> visited;
@@ -93,7 +93,7 @@ void Graph::Dijkstra(Node node)
         predecessorEdgesID[i] = -1;
     }
 
-    while (unvisited.begin() != unvisited.end()) {
+    /*while (unvisited.begin() != unvisited.end()) {
     
-    }
+    }*/
 }

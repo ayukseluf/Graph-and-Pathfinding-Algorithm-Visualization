@@ -51,9 +51,9 @@ class ofApp : public ofBaseApp
 	ofxButton maxNodeButton; // 100,000 nodes
 	ofxButton setSourceButton;
 	ofxButton setTargetButton;
+	ofxButton launchAnimationButton;
 	ofxToggle highlightSourceTargetToggle; 
 	ofxToggle highlightSelectedToggle;
-	ofxToggle launchAnimationToggle;
 
 	// These sliders double as primitve type variables. i.e. the totalNode variable can also
 	// be treated and used as an integer that stores the total number of nodes
@@ -81,6 +81,7 @@ class ofApp : public ofBaseApp
 	void _500NodeButtonPressed();
 	void _1000NodeButtonPressed();
 	void maxNodeButtonPressed();
+	void launchAnimationButtonPressed();
 
 	// Helper Functions
 	void generateGraph(unsigned int totalNodes);

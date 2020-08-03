@@ -30,6 +30,7 @@ void ofApp::setup()
 	_500NodeButton.addListener(this, &ofApp::_500NodeButtonPressed);
 	_1000NodeButton.addListener(this, &ofApp::_1000NodeButtonPressed);
 	maxNodeButton.addListener(this, &ofApp::maxNodeButtonPressed);
+	launchAnimationButton.addListener(this, &ofApp::launchAnimationButtonPressed);
 
 	// Help Gui
 	helpGui.setup("Help");
@@ -66,7 +67,7 @@ void ofApp::setup()
 	settingsGui.add(animationSpeedSlider.setup("Animation Speed", 1.0, .1, 10));
 	settingsGui.add(velocitySlider.setup("Velocity", 20, .1, 100));
 	settingsGui.add(timeLimitSlider.setup("Time Limit", 500, 1, 1000));
-	settingsGui.add(launchAnimationToggle.setup("Launch Animation", false));
+	settingsGui.add(launchAnimationButton.setup("Launch Animation"));
 
 	// Results Gui
 	resultsGui.setup("Results");
@@ -172,6 +173,11 @@ void ofApp::maxNodeButtonPressed()
 	generateGraph(100000);
 }
 
+void ofApp::launchAnimationButtonPressed()
+{
+	graph->Dijkstra(sourceNodeID);
+}
+
 // --------------------------- Helper Functions ---------------------------
 
 void ofApp::generateGraph(unsigned int numNodes)
@@ -181,11 +187,11 @@ void ofApp::generateGraph(unsigned int numNodes)
 	if (numNodes == 125)
 		graph = new Graph(numNodes, "data/message.txt");
 	else if (numNodes == 250)
-		graph = new Graph(numNodes, "data/250-A.txt");
+		graph = new Graph(numNodes, "data/250-B.txt");
 	else if (numNodes == 500)
-		graph = new Graph(numNodes, "data/500-A.txt");
+		graph = new Graph(numNodes, "FILE HERE");
 	else if (numNodes == 1000)
-		graph = new Graph(numNodes, "data/1000-A.txt");
+		graph = new Graph(numNodes, "FILE HERE");
 	else if (numNodes == 100000)
 		graph = new Graph(numNodes, "FILE HERE");
 
@@ -245,9 +251,15 @@ void ofApp::keyPressed(int key)
 {
 	// Selected node navigation
 	if (key == OF_KEY_LEFT)
+	{
+		highlightSelectedToggle = true;
 		selectedNodeSlider = selectedNodeSlider == 0 ? totalNodes - 1 : selectedNodeSlider - 1;
+	}
 	else if (key == OF_KEY_RIGHT)
+	{
+		highlightSelectedToggle = true;
 		selectedNodeSlider = (selectedNodeSlider + 1) % totalNodes;
+	}
 }
 
 void ofApp::keyReleased(int key)
@@ -291,7 +303,8 @@ void ofApp::keyReleased(int key)
 		showResults = !showResults;
 
 	// Run visualization
-	/*else if (key == OF_KEY_RETURN) // TODO */
+	else if (key == OF_KEY_RETURN)
+		launchAnimationButtonPressed();
 }	
 
 void ofApp::mouseMoved(int x, int y)

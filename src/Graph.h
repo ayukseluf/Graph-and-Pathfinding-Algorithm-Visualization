@@ -25,9 +25,10 @@ class Graph
         // Accessors
         unsigned int getSelectedNodeID(float x, float y) const;
         std::pair<float,float> getCordsFromID(unsigned int nodeID) const;
+        
 
         // Helper Functions
         void drawNodes() const;
         void drawEdges() const;
-        void Dijkstra(Node node);
+        void Dijkstra(unsigned int sourceID);
 };
