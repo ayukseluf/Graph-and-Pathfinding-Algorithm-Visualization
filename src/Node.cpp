@@ -1,10 +1,10 @@
 #include "Node.h"
 
-Node::Node(unsigned int ID)
+Node::Node(unsigned int ID, float x, float y)
 {
 	this->ID = ID;
-	x = ofRandom(5, ofGetWidth() - 5);
-	y = ofRandom(5, ofGetHeight() - 5);
+	this->y = y;
+	this->x = x;
 }
 
 unsigned int Node::getNodeID() const

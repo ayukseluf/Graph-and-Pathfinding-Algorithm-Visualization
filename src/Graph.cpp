@@ -1,41 +1,48 @@
 #include "Graph.h"
 #include <fstream>
 #include <sstream>
+
 Graph::Graph(unsigned int nodeCount, string fileName)
 {
     this->nodeCount = nodeCount;
 
-    // Generate nodes
-    for (unsigned int i = 0; i < nodeCount; i++)
-        nodes.push_back(Node(i));
-
-    // Read Edges from file
+    // Read edges and nodes from file
     loadEdges(fileName);
-
 }
+
 void Graph::loadEdges(string fileName) {
     ifstream file(fileName);
-    string row, fromIDString, toIDString, weightString;
+    string row, fromIDString, xString, yString, toIDString, weightString;
     unsigned int fromID, toID;
     short weight;
     short edgeID = 0;
-    cout << "In load function" << endl;
+    float x, y;
+    std::cout << "In load function" << std::endl;
     if (file.is_open()) {
-        cout << "In File" << endl;
+        std::cout << "In File" << std::endl;
         while (getline(file, row)) {
             stringstream edgeData(row);
             getline(edgeData, fromIDString, ' ');
             fromID = stoi(fromIDString);
-            getline(edgeData, toIDString, ' ');
-            toID = stoi(toIDString);
-            getline(edgeData, weightString, ' ');
-            weight = stoi(weightString);
-            nodes[fromID].setAdjacentNodes(toID, weight);
-            Edge edge(fromID, toID, weight, edgeID);
-            edgesInGraph.push_back(edge);
+            getline(edgeData, xString, ' ');
+            x = stoi(xString);
+            getline(edgeData, yString, ' ');
+            y = stoi(yString);
+            
+            while (getline(edgeData, toIDString, ' '))
+            {
+                toID = stoi(toIDString);
+                getline(edgeData, weightString, ' ');
+                weight = stoi(weightString);
+                nodes.push_back(Node(fromID, x, y));
+                nodes[fromID].setAdjacentNodes(toID, weight);
+                Edge edge(fromID, toID, weight, edgeID);
+                edgesInGraph.push_back(edge);
+            }
         }
     }
 }
+
 // Returns ID of node at (x,y) or -1 if not found
 unsigned int Graph::getSelectedNodeID(float x, float y) const
 {
@@ -57,6 +64,12 @@ void Graph::drawNodes() const
 {
     for (Node n : nodes)
         n.Draw();
+}
+
+void Graph::drawEdges() const
+{
+    for (Edge e : edgesInGraph)
+        ofDrawLine(getCordsFromID(e.getFrom()).first, getCordsFromID(e.getFrom()).second, getCordsFromID(e.getTo()).first, getCordsFromID(e.getTo()).second);
 }
 
 void Graph::Djikstra(Node node)

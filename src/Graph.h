@@ -25,5 +25,6 @@ class Graph
         // Helper Functions
         void loadEdges(string fileName);
         void drawNodes() const;
+        void drawEdges() const;
         void Djikstra(Node node);
 };

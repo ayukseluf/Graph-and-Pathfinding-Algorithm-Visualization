@@ -3,7 +3,7 @@
 void ofApp::setup()
 {
 	graph = nullptr;
-	generateGraph(500, "data/500-A.txt");
+	generateGraph(125, "data/message.txt");
 	
 	// Intialization
 	showAllMenus = true;
@@ -11,7 +11,7 @@ void ofApp::setup()
 	showSettings = true;
 	showResults = true;
 
-	// Styling // TODO: need to scale gui with window size
+	// Styling
 	ofFill();
 	ofBackground(80);
 	guiElementWidth = 250; 
@@ -87,7 +87,12 @@ void ofApp::update()
 
 void ofApp::draw()
 {
-	// Graph
+	// Edges
+	ofSetColor(3, 218, 198);
+	ofSetLineWidth(2);
+	graph->drawEdges();
+
+	// Nodes
 	ofSetColor(3, 218, 198);
 	if(totalNodes < 100000)
 		graph->drawNodes();
@@ -164,7 +169,7 @@ void ofApp::_1000NodeButtonPressed()
 
 void ofApp::maxNodeButtonPressed()
 {
-	generateGraph(100000, "/data/125-A.txt");
+	generateGraph(100000, "data/125-A.txt"); // FIX
 }
 
 // --------------------------- Helper Functions ---------------------------
@@ -275,8 +280,7 @@ void ofApp::keyReleased(int key)
 		showResults = !showResults;
 
 	// Run visualization
-	/*else if (key == OF_KEY_RETURN) // TODO
-		generateGraph(100); */
+	/*else if (key == OF_KEY_RETURN) // TODO */
 }	
 
 void ofApp::mouseMoved(int x, int y)

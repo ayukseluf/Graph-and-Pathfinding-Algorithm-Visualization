@@ -12,7 +12,8 @@ class Node
 public:
 
 	// Constructor
-	Node(unsigned int ID);
+	//Node(unsigned int ID);
+	Node(unsigned int ID, float x, float y);
 
 	// Accessors
 	unsigned int getNodeID() const;
