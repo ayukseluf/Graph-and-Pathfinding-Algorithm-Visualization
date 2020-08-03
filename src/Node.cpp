@@ -36,3 +36,14 @@ void Node::Draw() const
 {
 	ofDrawCircle(x, y, 3);
 }
+
+// Returns true if toID is in adjacentNodes
+bool Node::isAdjacent(unsigned int toID) const
+{
+	for (pair<unsigned int, float> p : adjacentNodes)
+	{
+		if (p.first == toID)
+			return true;
+	}
+	return false;
+}

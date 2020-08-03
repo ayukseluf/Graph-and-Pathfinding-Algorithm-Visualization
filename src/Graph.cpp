@@ -5,14 +5,11 @@
 Graph::Graph(unsigned int nodeCount, string fileName)
 {
     this->nodeCount = nodeCount;
-    load(fileName);
-}
- 
-void Graph::load(string fileName)
-{
-    // Read data and build nodes
+
+    // Read file and build nodes
     std::ifstream file(fileName);
     string line = "";
+    short nextEdgeID = 0;
     while (getline(file, line))
     {
         // Load source node's ID and coordinates
@@ -23,33 +20,32 @@ void Graph::load(string fileName)
         getline(edgeData, sourceX, ' ');
         string sourceY = "";
         getline(edgeData, sourceY, ' ');
-        
+
         // Construct source node
         nodes.push_back(Node(stoi(sourceID), stof(sourceX), stof(sourceY)));
-        
-        // Load source node's adjacency list
+
+        // Load source node's adjacency list annd construct edges
         string targetID = "";
         string targetWeight = "";
         while (getline(edgeData, targetID, ' '))
         {
             getline(edgeData, targetWeight, ' ');
-            nodes[nodes.size() - 1].setAdjacentNodes(stoi(targetID), stof(targetWeight));
-        }
-    }
-   
-    // Build edges
-    short nextEdgeID = 0;
-    for (Node from : nodes)
-    {
-        for (pair< unsigned int, float > to : from.getAdjacentNodes())
-        {
-            edgesInGraph.push_back(Edge(from.getNodeID(), to.first, to.second, nextEdgeID)); // Edge(fromID, toID, weight, edgeID)
+            nodes[stoi(sourceID)].setAdjacentNodes(stoi(targetID), stof(targetWeight));
+            edgesInGraph.push_back(Edge(stoi(sourceID), stoi(targetID), stof(targetWeight), nextEdgeID));
             nextEdgeID++;
         }
     }
 
-    // Verify graph is undirected by ensuring that each source node is in each of it's target nodes adjacentNodes list
-    // TODO
+   // !!!NOTE: This code has a horrible complexity and if Dijkstras can be implemented without ensuring that nodes are reciprocally in adjacency lists then delete/
+   // Ensures that the graph is undirected by making sure adjacent nodes are in each others adjaceny list
+    for (Node from : nodes)
+    {
+        for (pair< unsigned int, float > to : from.getAdjacentNodes())
+        {
+            if (!nodes[to.first].isAdjacent(from.getNodeID()))
+                nodes[to.first].setAdjacentNodes(from.getNodeID(), to.second);
+        }
+    }
 
 }
 

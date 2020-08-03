@@ -6,6 +6,8 @@
 #include "Path.h"
 #include "Node.h"
 
+using std::string;
+
 class Graph
 {
     private:
@@ -23,7 +25,6 @@ class Graph
         std::pair<float,float> getCordsFromID(unsigned int nodeID) const;
 
         // Helper Functions
-        void load(string fileName);
         void drawNodes() const;
         void drawEdges() const;
         void Djikstra(Node node);

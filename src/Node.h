@@ -5,7 +5,7 @@
 
 class Node
 {
-	std::vector< pair< unsigned int, float > > adjacentNodes; // toID weight
+	std::vector< pair< unsigned int, float > > adjacentNodes; // <toID, weight>
 	unsigned int ID;
 	float x, y;
 
@@ -25,7 +25,5 @@ public:
 
 	// Helper Functions
 	void Draw() const;
+	bool isAdjacent(unsigned int toID) const;
 };
-
-
-

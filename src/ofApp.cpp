@@ -3,7 +3,7 @@
 void ofApp::setup()
 {
 	graph = nullptr;
-	generateGraph(125, "data/message.txt");
+	generateGraph(125);
 	
 	// Intialization
 	showAllMenus = true;
@@ -88,7 +88,7 @@ void ofApp::update()
 void ofApp::draw()
 {
 	// Edges
-	ofSetColor(3, 218, 198);
+	ofSetColor(17, 100, 91);
 	ofSetLineWidth(2);
 	graph->drawEdges();
 
@@ -150,34 +150,45 @@ void ofApp::setTargetButtonPressed()
 
 void ofApp::_125NodeButtonPressed()
 {
-	generateGraph(125, "data/125-A.txt");
+	generateGraph(125);
 }
 
 void ofApp::_250NodeButtonPressed()
 {
-	generateGraph(250, "data/250-A.txt");
+	generateGraph(250);
 }
 void ofApp::_500NodeButtonPressed()
 {
-	generateGraph(500, "data/500-A.txt");
+	generateGraph(500);
 }
 
 void ofApp::_1000NodeButtonPressed()
 {
-	generateGraph(1000, "data/1000-A.txt");
+	generateGraph(1000);
 }
 
 void ofApp::maxNodeButtonPressed()
 {
-	generateGraph(100000, "data/125-A.txt"); // FIX
+	generateGraph(100000);
 }
 
 // --------------------------- Helper Functions ---------------------------
 
-void ofApp::generateGraph(unsigned int numNodes, string fileName)
+void ofApp::generateGraph(unsigned int numNodes)
 {
 	delete graph;
-	graph = new Graph(numNodes, fileName);
+
+	if (numNodes == 125)
+		graph = new Graph(numNodes, "data/message.txt");
+	else if (numNodes == 250)
+		graph = new Graph(numNodes, "data/250-A.txt");
+	else if (numNodes == 500)
+		graph = new Graph(numNodes, "data/500-A.txt");
+	else if (numNodes == 1000)
+		graph = new Graph(numNodes, "data/1000-A.txt");
+	else if (numNodes == 100000)
+		graph = new Graph(numNodes, "FILE HERE");
+
 	
 	totalNodes = numNodes;
 
