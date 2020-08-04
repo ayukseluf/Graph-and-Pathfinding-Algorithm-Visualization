@@ -1,16 +1,22 @@
 #pragma once
-
+#include <stack>
 #include <vector>
 #include "Edge.h"
-#include "Graph.h"
+
 
 class Path
 {
     private:
         //Either a stack or vector needs to go here
+        std::stack<Edge> edgesToDestination;
         unsigned int sourceNodeID;
-        std::vector<Edge> edgesToDestination;
+        unsigned int finalNodeID;
 
     public:
-        Path(unsigned int sourceNodeID, std::vector<Edge> &edgesToDestination);
+        
+        //Constructor
+        Path(unsigned int sourceNodeID, unsigned int finalNodeID, std::stack<Edge> edgesToDestination);
+
+        //Accessors
+        std::stack<Edge> getEdgesToDestination()const;
 };

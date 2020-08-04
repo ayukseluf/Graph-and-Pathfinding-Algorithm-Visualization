@@ -1,6 +1,7 @@
 #include "Graph.h"
 #include <fstream>
 #include <sstream>
+#include <stack>
 
 Graph::Graph(unsigned int nodeCount, string fileName)
 {
@@ -32,6 +33,8 @@ Graph::Graph(unsigned int nodeCount, string fileName)
             getline(edgeData, targetWeight, ' ');
             nodes[stoi(sourceID)].setAdjacentNodes(stoi(targetID), stof(targetWeight));
             edgesInGraph.push_back(Edge(stoi(sourceID), stoi(targetID), stof(targetWeight), nextEdgeID));
+            nextEdgeID++;
+            edgesInGraph.push_back(Edge(stoi(targetID), stoi(sourceID), stof(targetWeight), nextEdgeID));
             nodes[stoi(sourceID)].setAdjacentEdges(edgesInGraph[nextEdgeID]);
             nextEdgeID++;
         }
@@ -46,6 +49,7 @@ Graph::Graph(unsigned int nodeCount, string fileName)
            if (!nodes[to.first].isAdjacent(from.getNodeID()))
                nodes[to.first].setAdjacentNodes(from.getNodeID(), to.second);
        }
+       
    }
 }
 
@@ -93,7 +97,6 @@ void Graph::Dijkstra(unsigned int sourceID)
     for (unsigned int i = 0; i < nodes.size(); i++) {
         distances.push_back(10000000000000.00);
         predecessorNodesID.push_back(-1);
-        predecessorEdgesID.push_back(-1);
     }
     
     //The distance to the source should be zero
@@ -107,7 +110,6 @@ void Graph::Dijkstra(unsigned int sourceID)
             if (distances[currNode.getNodeID()] + n.second < distances[n.first]) {
                 distances[n.first] = distances[currNode.getNodeID()] + n.second;
                 predecessorNodesID[n.first] = currNode.getNodeID();
-                //predecessorEdgesID[n.getTo()] = n.getEdgeID();
             }
         }
         
@@ -131,12 +133,27 @@ void Graph::Dijkstra(unsigned int sourceID)
             currNode = nodes[minNodeID];
         }
     }
-    cout << sourceID << endl;
-    for (float d : distances) {
-        cout << d << " ";
-    }
-    cout << endl;
+
     for (int n : predecessorNodesID) {
         cout << n << " ";
     }
+}
+
+Path Graph::establishPath(unsigned int sourceID, unsigned int finalID) {
+    stack<Edge> edges;
+    unsigned int currNodeID = finalID;
+    while (currNodeID != sourceID)
+    {
+        unsigned int precedingNodeID = currNodeID;
+        currNodeID = predecessorNodesID[currNodeID];
+        for (Edge e : edgesInGraph)
+        {
+            if (e.getFrom() == currNodeID && e.getTo() == precedingNodeID)
+            {
+                edges.push(e);
+                break;
+            }
+        }
+    }
+    return Path(sourceID, finalID, edges);
 }

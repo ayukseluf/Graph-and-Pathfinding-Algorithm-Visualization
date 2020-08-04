@@ -15,8 +15,7 @@ class Graph
         std::vector<Node> nodes; // Nodes indexed by ID
         std::vector<Edge> edgesInGraph; // Initialized in graph generation
         std::vector<int> predecessorNodesID;
-        std::vector<double> distances;
-        std::vector<int> predecessorEdgesID;
+        std::vector<float> distances;
       
     public:
         // Constructor
@@ -25,10 +24,10 @@ class Graph
         // Accessors
         unsigned int getSelectedNodeID(float x, float y) const;
         std::pair<float,float> getCordsFromID(unsigned int nodeID) const;
-        
 
         // Helper Functions
         void drawNodes() const;
         void drawEdges() const;
         void Dijkstra(unsigned int sourceID);
+        Path establishPath(unsigned int sourceID, unsigned int finalID);
 };
