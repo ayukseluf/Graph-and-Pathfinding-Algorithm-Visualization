@@ -15,7 +15,7 @@ class Graph
         std::vector<Node> nodes; // Nodes indexed by ID
         std::vector<Edge> edgesInGraph; // Initialized in graph generation
         std::vector<int> predecessorNodesID;
-        std::vector<unsigned int> distances;
+        std::vector<double> distances;
         std::vector<int> predecessorEdgesID;
       
     public:

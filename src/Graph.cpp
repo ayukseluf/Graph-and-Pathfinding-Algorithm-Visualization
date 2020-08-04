@@ -82,18 +82,55 @@ void Graph::drawEdges() const
 
 void Graph::Dijkstra(unsigned int sourceID)
 {
-    //visited will start empty and unvisited will be full
-    vector <Node> visited;
-    vector <Node> unvisited = nodes;
+    Node currNode = nodes[sourceID];
 
+    //visited will start empty and unvisited will be full
+    set <unsigned int> visited;
+    set <unsigned int> unvisited;
+
+    for (Node n : nodes) {
+        unvisited.insert(n.getNodeID());
+    }
     //First Initialize distance vector to a max value, and vectors holding previous nodes and edges to -1
     for (unsigned int i = 0; i < nodes.size(); i++) {
-        distances[i] = 1000000000;
-        predecessorNodesID[i] = -1;
-        predecessorEdgesID[i] = -1;
+        distances.push_back(100000000000000000.00);
+        predecessorNodesID.push_back(-1);
+        predecessorEdgesID.push_back(-1);
     }
-
-    /*while (unvisited.begin() != unvisited.end()) {
     
-    }*/
+    //The distance to the source should be zero
+    distances[sourceID] = 0;
+
+    while (unvisited.begin() != unvisited.end()) {
+
+        //Looks through all the adjacent distances to see if there is a shorter path
+        for (auto n : currNode.getAdjacentEdges()) {
+            //IF less than distance then replace
+            if (distances[currNode.getNodeID()] + n.getWeight() < distances[n.getTo()]) {
+                distances[n.getTo()] = distances[currNode.getNodeID()] + n.getWeight();
+                predecessorNodesID[n.getTo()] = currNode.getNodeID();
+                predecessorEdgesID[n.getTo()] = n.getEdgeID();
+            }
+        }
+        
+        //Add the node into visited nodes
+        visited.insert(currNode.getNodeID());
+
+        //Deletes the node because it has been visited
+        unvisited.erase(currNode.getNodeID());
+
+        //Searches through the distance vector for the smallest weight as the next current Node
+        if (unvisited.begin() != unvisited.end()) {
+            auto it = unvisited.begin();
+            float min = 100000000000000000.00;
+            unsigned int minNodeID = *it;
+            for (; it != unvisited.end(); it++) {
+                if (distances[*it] < min) {
+                    min = distances[*it];
+                    minNodeID = *it;
+                }
+            }
+            currNode = nodes[minNodeID];
+        }
+    }
 }
