@@ -37,18 +37,16 @@ Graph::Graph(unsigned int nodeCount, string fileName)
         }
     }
 
-   // !!!NOTE: This code has a horrible complexity and if Dijkstras can be implemented without ensuring that nodes are reciprocally in adjacency lists then delete/
-   // Ensures that the graph is undirected by making sure adjacent nodes are in each others adjaceny list
-    for (Node from : nodes)
-    {
-        for (pair< unsigned int, float > to : from.getAdjacentNodes())
-        {
-            if (!nodes[to.first].isAdjacent(from.getNodeID()))
-                nodes[to.first].setAdjacentNodes(from.getNodeID(), to.second);
-        }
-    }
-
-
+   //!!!NOTE: This code has a horrible complexity and if Dijkstras can be implemented without ensuring that nodes are reciprocally in adjacency lists then delete/
+   //Ensures that the graph is undirected by making sure adjacent nodes are in each others adjaceny list
+   for (Node from : nodes)
+   {
+       for (pair< unsigned int, float > to : from.getAdjacentNodes())
+       {
+           if (!nodes[to.first].isAdjacent(from.getNodeID()))
+               nodes[to.first].setAdjacentNodes(from.getNodeID(), to.second);
+       }
+   }
 }
 
 // Returns ID of node at (x,y) or -1 if not found
@@ -93,7 +91,7 @@ void Graph::Dijkstra(unsigned int sourceID)
     }
     //First Initialize distance vector to a max value, and vectors holding previous nodes and edges to -1
     for (unsigned int i = 0; i < nodes.size(); i++) {
-        distances.push_back(100000000000000000.00);
+        distances.push_back(10000000000000.00);
         predecessorNodesID.push_back(-1);
         predecessorEdgesID.push_back(-1);
     }
@@ -104,12 +102,12 @@ void Graph::Dijkstra(unsigned int sourceID)
     while (unvisited.begin() != unvisited.end()) {
 
         //Looks through all the adjacent distances to see if there is a shorter path
-        for (auto n : currNode.getAdjacentEdges()) {
+        for (auto n : currNode.getAdjacentNodes()) {
             //IF less than distance then replace
-            if (distances[currNode.getNodeID()] + n.getWeight() < distances[n.getTo()]) {
-                distances[n.getTo()] = distances[currNode.getNodeID()] + n.getWeight();
-                predecessorNodesID[n.getTo()] = currNode.getNodeID();
-                predecessorEdgesID[n.getTo()] = n.getEdgeID();
+            if (distances[currNode.getNodeID()] + n.second < distances[n.first]) {
+                distances[n.first] = distances[currNode.getNodeID()] + n.second;
+                predecessorNodesID[n.first] = currNode.getNodeID();
+                //predecessorEdgesID[n.getTo()] = n.getEdgeID();
             }
         }
         
@@ -122,7 +120,7 @@ void Graph::Dijkstra(unsigned int sourceID)
         //Searches through the distance vector for the smallest weight as the next current Node
         if (unvisited.begin() != unvisited.end()) {
             auto it = unvisited.begin();
-            float min = 100000000000000000.00;
+            float min = 1000000000000.00;
             unsigned int minNodeID = *it;
             for (; it != unvisited.end(); it++) {
                 if (distances[*it] < min) {
@@ -132,5 +130,13 @@ void Graph::Dijkstra(unsigned int sourceID)
             }
             currNode = nodes[minNodeID];
         }
+    }
+    cout << sourceID << endl;
+    for (float d : distances) {
+        cout << d << " ";
+    }
+    cout << endl;
+    for (int n : predecessorNodesID) {
+        cout << n << " ";
     }
 }
