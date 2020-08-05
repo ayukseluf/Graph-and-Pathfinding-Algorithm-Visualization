@@ -135,7 +135,8 @@ void ofApp::draw()
 	// Edges
 	ofSetColor(158, 90, 99);
 	ofSetLineWidth(2);
-	graph->drawEdges();
+	if(totalNodes < 100000)
+		graph->drawEdges();
 
 	// Nodes
 	ofSetColor(151, 170, 189);
@@ -275,7 +276,7 @@ void ofApp::generateGraph(unsigned int numNodes)
 	else if (numNodes == 1000)
 		graph = new Graph(numNodes, "data/1000-B.txt");
 	else if (numNodes == 100000)
-		graph = new Graph(numNodes, "data/100000.txt");
+		graph = new Graph(numNodes, "data/100000-A.txt");
 
 	// Update ofApp values
 	totalNodes = numNodes;

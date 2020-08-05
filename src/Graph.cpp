@@ -10,7 +10,7 @@ Graph::Graph(unsigned int nodeCount, string fileName)
     // Read file and build nodes
     std::ifstream file(fileName);
     string line = "";
-    short nextEdgeID = 0;
+    unsigned int nextEdgeID = 0;
     while (getline(file, line))
     {
         // Load source node's ID and coordinates

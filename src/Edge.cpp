@@ -2,7 +2,7 @@
 
 // --------------------------- Constructor ------------------------------
 
-Edge::Edge(unsigned int fromID, unsigned int toID, float weight, short edgeID)
+Edge::Edge(unsigned int fromID, unsigned int toID, float weight, unsigned int edgeID)
 {
     this->fromID = fromID;
     this->toID = toID;
@@ -27,7 +27,7 @@ float Edge::getWeight() const
     return this->weight;
 }
 
-short Edge::getEdgeID() const
+unsigned int Edge::getEdgeID() const
 {
     return this->edgeID;
 }
