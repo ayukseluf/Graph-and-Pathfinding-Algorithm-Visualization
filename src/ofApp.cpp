@@ -185,15 +185,15 @@ void ofApp::generateGraph(unsigned int numNodes)
 	delete graph;
 
 	if (numNodes == 125)
-		graph = new Graph(numNodes, "data/message.txt");
+		graph = new Graph(numNodes, "data/125-B.txt");
 	else if (numNodes == 250)
 		graph = new Graph(numNodes, "data/250-B.txt");
 	else if (numNodes == 500)
-		graph = new Graph(numNodes, "FILE HERE");
+		graph = new Graph(numNodes, "data/500-B.txt");
 	else if (numNodes == 1000)
-		graph = new Graph(numNodes, "FILE HERE");
+		graph = new Graph(numNodes, "data/1000-B.txt");
 	else if (numNodes == 100000)
-		graph = new Graph(numNodes, "FILE HERE");
+		graph = new Graph(numNodes, "data/100000.txt");
 
 	
 	totalNodes = numNodes;
