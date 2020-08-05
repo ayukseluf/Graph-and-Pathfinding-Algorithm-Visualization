@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <string>
 #include "ofMain.h" // Required library
 #include "ofxGui.h" // Required addon
@@ -10,11 +9,18 @@ class ofApp : public ofBaseApp
 {
 	Graph* graph;
 
+	// Animation objects
+	std::vector<Edge> shortestPath;
+	std::stack<Edge> toBeDrawn; 
+
 	// Menu values
 	unsigned int totalNodes;
 	unsigned int selectedNodeID;
 	unsigned int sourceNodeID;
 	unsigned int targetNodeID;
+	float totalWeight; // of shortest path
+	float elapsedTime; // of dijkstra's algorithim execution
+	float idealTime; // required to travel from source to target
 
 	// Menu visibility
 	bool showAllMenus;
@@ -66,9 +72,15 @@ class ofApp : public ofBaseApp
 
 	// Results menu
 	ofxGuiGroup resultsGui;
+	ofxLabel dijRuntimeLabel;
 	ofxLabel idealTimeLabel;
 	ofxLabel actualTimeLabel;
 	ofxLabel timeDeltaLabel;
+
+	// Primary Functions
+	void setup();
+	void update();
+	void draw();
 
 	// Listeners
 	void sourceNodeSliderChanged(int& sourceNode);
@@ -85,22 +97,13 @@ class ofApp : public ofBaseApp
 
 	// Helper Functions
 	void generateGraph(unsigned int totalNodes);
-	string makeSelectedCordLabel() const;
+	void drawShortestPath(int delay);
+	std::string makeSelectedCordLabel() const;
 	void drawArrow(std::pair<float, float> nodeCords, string label) const;
+	std::string floatToStringTruncated(float value, int decimalPlaces) const;
 
-	// Events
-	void setup();
-	void update();
-	void draw();
+	// Input Events
 	void keyPressed(int key);
 	void keyReleased(int key);
-	void mouseMoved(int x, int y);
-	void mouseDragged(int x, int y, int button);
-	void mousePressed(int x, int y, int button);
 	void mouseReleased(int x, int y, int button);
-	void mouseEntered(int x, int y);
-	void mouseExited(int x, int y);
-	void windowResized(int w, int h);
-	void dragEvent(ofDragInfo dragInfo);
-	void gotMessage(ofMessage msg);
 };

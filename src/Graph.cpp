@@ -1,11 +1,11 @@
 #include "Graph.h"
-#include <fstream>
-#include <sstream>
-#include <stack>
+
+// --------------------------- Constructor ------------------------------
 
 Graph::Graph(unsigned int nodeCount, string fileName)
 {
     this->nodeCount = nodeCount;
+    lastSourceNodeID = INT_MAX; // Set to dummy value
 
     // Read file and build nodes
     std::ifstream file(fileName);
@@ -15,19 +15,19 @@ Graph::Graph(unsigned int nodeCount, string fileName)
     {
         // Load source node's ID and coordinates
         stringstream edgeData(line);
-        string sourceID = "";
+        std::string sourceID = "";
         getline(edgeData, sourceID, ' ');
-        string sourceX = "";
+        std::string sourceX = "";
         getline(edgeData, sourceX, ' ');
-        string sourceY = "";
+        std::string sourceY = "";
         getline(edgeData, sourceY, ' ');
 
         // Construct source node
         nodes.push_back(Node(stoi(sourceID), stof(sourceX), stof(sourceY)));
 
         // Load source node's adjacency list annd construct edges
-        string targetID = "";
-        string targetWeight = "";
+        std::string targetID = "";
+        std::string targetWeight = "";
         while (getline(edgeData, targetID, ' '))
         {
             getline(edgeData, targetWeight, ' ');
@@ -40,8 +40,8 @@ Graph::Graph(unsigned int nodeCount, string fileName)
         }
     }
 
-   //!!!NOTE: This code has a horrible complexity and if Dijkstras can be implemented without ensuring that nodes are reciprocally in adjacency lists then delete/
-   //Ensures that the graph is undirected by making sure adjacent nodes are in each others adjaceny list
+   // Make the graph undirected by ensuring that if node A is in node B's adjacency list, node B will also be in 
+   // node A's adjacency list
    for (Node from : nodes)
    {
        for (pair< unsigned int, float > to : from.getAdjacentNodes())
@@ -53,7 +53,9 @@ Graph::Graph(unsigned int nodeCount, string fileName)
    }
 }
 
-// Returns ID of node at (x,y) or -1 if not found
+// ---------------------------- Accessors -------------------------------
+
+// Returns ID of node at passed coordinates or -1 if no node at that position
 unsigned int Graph::getSelectedNodeID(float x, float y) const
 {
     for (Node n : nodes)
@@ -65,10 +67,18 @@ unsigned int Graph::getSelectedNodeID(float x, float y) const
     return -1;
 }
 
+// Returns coordinates associated with nodeID
 std::pair<float, float> Graph::getCordsFromID(unsigned int nodeID) const
 {
     return std::make_pair(nodes[nodeID].getX(), nodes[nodeID].getY());
 }
+
+unsigned int Graph::getLastSourceNodeID() const
+{
+    return lastSourceNodeID;
+}
+
+// ------------------------ Helper Functions ---------------------------
 
 void Graph::drawNodes() const
 {
@@ -84,30 +94,38 @@ void Graph::drawEdges() const
 
 void Graph::Dijkstra(unsigned int sourceID)
 {
+    // Reset variables from last call
+    lastSourceNodeID = sourceID;
+    predecessorNodesID.clear();
+    distances.clear();
+
     Node currNode = nodes[sourceID];
 
-    //visited will start empty and unvisited will be full
+    // Visited will start empty and unvisited will be full
     set <unsigned int> visited;
     set <unsigned int> unvisited;
 
-    for (Node n : nodes) {
+    for (Node n : nodes) 
         unvisited.insert(n.getNodeID());
-    }
-    //First Initialize distance vector to a max value, and vectors holding previous nodes and edges to -1
-    for (unsigned int i = 0; i < nodes.size(); i++) {
+    
+    // Initialize distance vector to a max value, and vectors holding previous nodes and edges to -1
+    for (unsigned int i = 0; i < nodes.size(); i++) 
+    {
         distances.push_back(10000000000000.00);
         predecessorNodesID.push_back(-1);
     }
     
-    //The distance to the source should be zero
+    // The distance to the source should be zero
     distances[sourceID] = 0;
 
-    while (unvisited.begin() != unvisited.end()) {
-
-        //Looks through all the adjacent distances to see if there is a shorter path
-        for (auto n : currNode.getAdjacentNodes()) {
-            //IF less than distance then replace
-            if (distances[currNode.getNodeID()] + n.second < distances[n.first]) {
+    while (unvisited.begin() != unvisited.end()) 
+    {
+        //Look through all the adjacent distances to see if there is a shorter path
+        for (auto n : currNode.getAdjacentNodes()) 
+        {
+            // If less than distance then replace
+            if (distances[currNode.getNodeID()] + n.second < distances[n.first]) 
+            {
                 distances[n.first] = distances[currNode.getNodeID()] + n.second;
                 predecessorNodesID[n.first] = currNode.getNodeID();
             }
@@ -116,16 +134,19 @@ void Graph::Dijkstra(unsigned int sourceID)
         //Add the node into visited nodes
         visited.insert(currNode.getNodeID());
 
-        //Deletes the node because it has been visited
+        // Delete the node because it has been visited
         unvisited.erase(currNode.getNodeID());
 
-        //Searches through the distance vector for the smallest weight as the next current Node
-        if (unvisited.begin() != unvisited.end()) {
+        // Searches through the distance vector for the smallest weight as the next current Node
+        if (unvisited.begin() != unvisited.end()) 
+        {
             auto it = unvisited.begin();
             float min = 1000000000000.00;
             unsigned int minNodeID = *it;
-            for (; it != unvisited.end(); it++) {
-                if (distances[*it] < min) {
+            for (; it != unvisited.end(); it++) 
+            {
+                if (distances[*it] < min) 
+                {
                     min = distances[*it];
                     minNodeID = *it;
                 }
@@ -133,16 +154,14 @@ void Graph::Dijkstra(unsigned int sourceID)
             currNode = nodes[minNodeID];
         }
     }
-
-    for (int n : predecessorNodesID) {
-        cout << n << " ";
-    }
 }
 
-Path Graph::establishPath(unsigned int sourceID, unsigned int finalID) {
+// Returns stack of edges in shortest path from source to target node
+std::stack<Edge> Graph::establishPath(unsigned int finalID) 
+{
     stack<Edge> edges;
     unsigned int currNodeID = finalID;
-    while (currNodeID != sourceID)
+    while (currNodeID != lastSourceNodeID)
     {
         unsigned int precedingNodeID = currNodeID;
         currNodeID = predecessorNodesID[currNodeID];
@@ -155,5 +174,5 @@ Path Graph::establishPath(unsigned int sourceID, unsigned int finalID) {
             }
         }
     }
-    return Path(sourceID, finalID, edges);
+    return edges;
 }

@@ -6,8 +6,8 @@
 
 class Node
 {
-	std::vector< pair< unsigned int, float > > adjacentNodes; // <toID, weight>
-	std::vector< Edge > adjacentEdges;
+	std::vector<pair<unsigned int, float>> adjacentNodes; // <toID, weight>
+	std::vector<Edge> adjacentEdges;
 	unsigned int ID;
 	float x, y;
 
@@ -23,7 +23,7 @@ public:
 	std::vector< pair< unsigned int, float > > getAdjacentNodes() const;
 	std::vector<Edge> getAdjacentEdges() const;
 
-	//Mutators
+	// Mutators
 	void setAdjacentNodes(unsigned int toID, float weight);
 	void setAdjacentEdges(Edge edge);
 

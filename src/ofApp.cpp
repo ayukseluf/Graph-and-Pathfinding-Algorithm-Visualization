@@ -5,7 +5,7 @@ void ofApp::setup()
 	graph = nullptr;
 	generateGraph(125);
 	
-	// Intialization
+	// Show menus
 	showAllMenus = true;
 	showHelp = true;
 	showSettings = true;
@@ -64,7 +64,7 @@ void ofApp::setup()
 	settingsGui.add(setSourceButton.setup("Set as Source"));
 	settingsGui.add(setTargetButton.setup("Set as Target"));
 	settingsGui.add(spacer3.setup("", ""));
-	settingsGui.add(animationSpeedSlider.setup("Animation Speed", 1.0, .1, 10));
+	settingsGui.add(animationSpeedSlider.setup("Animation Speed", 1, .1, 2));
 	settingsGui.add(velocitySlider.setup("Velocity", 20, .1, 100));
 	settingsGui.add(timeLimitSlider.setup("Time Limit", 500, 1, 1000));
 	settingsGui.add(launchAnimationButton.setup("Launch Animation"));
@@ -72,17 +72,40 @@ void ofApp::setup()
 	// Results Gui
 	resultsGui.setup("Results");
 	resultsGui.setPosition(ofGetWidth() - guiElementWidth - 5, 900);
-	resultsGui.add(idealTimeLabel.setup("Ideal Time Taken","   0:00"));
-	resultsGui.add(actualTimeLabel.setup("Actual Time Taken","  0:00"));
-	resultsGui.add(timeDeltaLabel.setup("Inefficiency Delta", " 0:00"));
+	resultsGui.add(dijRuntimeLabel.setup("Dijkstra Runtime", ""));
+	resultsGui.add(idealTimeLabel.setup("Ideal Time Taken",""));
+	resultsGui.add(actualTimeLabel.setup("Actual Time Taken",""));
+	resultsGui.add(timeDeltaLabel.setup("Time Delta", ""));
 }
 
 void ofApp::update()
 {
-	if(totalNodes == 100000) // Force highlighters on for 100k nodes
+	// Force highlighters on for 100k nodes
+	if(totalNodes == 100000) 
 	{
 		highlightSourceTargetToggle = true;
 		highlightSelectedToggle = true;
+	}
+
+	// Update results after animation concluded
+	if (toBeDrawn.empty() && shortestPath.size() > 0)
+	{
+		std::string spacer = "          ";
+
+		// Actual time -> weight of best path / velocity
+		std::string actualTimeString = floatToStringTruncated(totalWeight / velocitySlider, 2);
+		actualTimeLabel = spacer.substr(0, spacer.length() - actualTimeString.length() - 1) + actualTimeString; // Align text
+
+		// Ideal time -> straight line distance between source and target / velocity
+		std::string idealTimeString = floatToStringTruncated(idealTime, 2);
+		idealTimeLabel = spacer.substr(0, spacer.length() - idealTimeString.length()) + idealTimeString; // Align text
+
+		// Delta -> actual time - ideal time
+		std::string delta = floatToStringTruncated(stof(actualTimeString) - stof(idealTimeString), 2);
+		timeDeltaLabel = " " + spacer.substr(0, spacer.length() - delta.length() + 9) + delta; // Align text
+
+		// Dijkstras runtime
+		dijRuntimeLabel = to_string((int)elapsedTime) + " ms";
 	}
 }
 
@@ -92,6 +115,10 @@ void ofApp::draw()
 	ofSetColor(17, 100, 91);
 	ofSetLineWidth(2);
 	graph->drawEdges();
+
+	// Shortest Path
+	ofSetColor(0, 255, 0);
+	drawShortestPath(21 - int(animationSpeedSlider * 10));
 
 	// Nodes
 	ofSetColor(3, 218, 198);
@@ -175,27 +202,48 @@ void ofApp::maxNodeButtonPressed()
 
 void ofApp::launchAnimationButtonPressed()
 {
-	graph->Dijkstra(sourceNodeID);
+	// Reset values from previous shortest path
+	shortestPath.clear();
+	totalWeight = 0;
+	idealTimeLabel = "";
+	actualTimeLabel = "";
+	timeDeltaLabel = "";
+	dijRuntimeLabel = "";
+
+	// Call Dijkstra only if source node changed since last call
+	if (sourceNodeID != graph->getLastSourceNodeID())
+	{
+		ofResetElapsedTimeCounter();
+		graph->Dijkstra(sourceNodeID);
+		elapsedTime = ofGetElapsedTimeMillis();
+	}
+	idealTime = ofDist(graph->getCordsFromID(sourceNodeID).first, graph->getCordsFromID(sourceNodeID).second, graph->getCordsFromID(targetNodeID).first, graph->getCordsFromID(targetNodeID).second) / velocitySlider;
+	
+	// Push all edges in the shortest path to toBeDrawn
+	toBeDrawn = graph->establishPath(targetNodeID);
 }
 
 // --------------------------- Helper Functions ---------------------------
 
 void ofApp::generateGraph(unsigned int numNodes)
 {
+	// Delete previous graph
 	delete graph;
+	shortestPath.clear();
 
+	// Load graph from file
 	if (numNodes == 125)
-		graph = new Graph(numNodes, "data/message.txt");
+		graph = new Graph(numNodes, "data/125-B.txt");
 	else if (numNodes == 250)
 		graph = new Graph(numNodes, "data/250-B.txt");
 	else if (numNodes == 500)
-		graph = new Graph(numNodes, "FILE HERE");
+		graph = new Graph(numNodes, "data/500-B.txt");
 	else if (numNodes == 1000)
-		graph = new Graph(numNodes, "FILE HERE");
+		graph = new Graph(numNodes, "data/1000-B.txt");
 	else if (numNodes == 100000)
 		graph = new Graph(numNodes, "FILE HERE");
 
-	
+	// Update ofApp values
 	totalNodes = numNodes;
 
 	sourceNodeSlider.setMax(totalNodes - 1);
@@ -211,8 +259,28 @@ void ofApp::generateGraph(unsigned int numNodes)
 	selectedNodeSlider = totalNodes / 2;
 }
 
+// Draws edges in shortestPath. Animation effect created by popping edges off of to be drawn stack every "delay" frames.
+void ofApp::drawShortestPath(int delay)
+{
+	// Push edges to shortestPath with delay
+	if (!toBeDrawn.empty() && ofGetFrameNum() % delay == 0)
+	{
+		shortestPath.push_back(toBeDrawn.top());
+		totalWeight += toBeDrawn.top().getWeight();
+		toBeDrawn.pop();
+	}
+
+	// Draw edges in shortestPath
+	for (Edge edge : shortestPath)
+	{
+		std::pair<float, float> from = graph->getCordsFromID(edge.getFrom());
+		std::pair<float, float> to = graph->getCordsFromID(edge.getTo());
+		ofDrawLine(from.first, from.second, to.first, to.second);
+	}
+}
+
 // Creates selected node coordinate label. Must be called after adjusting selectedNodeID.
-string ofApp::makeSelectedCordLabel() const
+std::string ofApp::makeSelectedCordLabel() const
 {
 	return "(" + to_string((int)graph->getCordsFromID(selectedNodeID).first) + "," + to_string((int)graph->getCordsFromID(selectedNodeID).second) + ")";
 }
@@ -226,12 +294,12 @@ void ofApp::drawArrow(std::pair<float, float> nodeCords, string label) const
 
 	ofDrawTriangle(nodeCords.first, nodeCords.second - 6.75 * yOffset, nodeCords.first + 13.5, nodeCords.second - 20.25 * yOffset, nodeCords.first - 13.5, nodeCords.second - 20.25 * yOffset);
 	
-	if (label == "") // Rectangular arrow
-	{
+	// Unlabled rectangular arrow
+	if (label == "")
 		ofDrawRectangle(nodeCords.first - 13.5, nodeCords.second - 33.75 * yOffset, 27, 13.5 * yOffset);
-	}
 
-	else // Labeled arrow
+	// Labeled standard arrow
+	else
 	{
 		ofSetLineWidth(13.5);
 		ofDrawLine(nodeCords.first, nodeCords.second - 20.25 * yOffset, nodeCords.first, nodeCords.second - 33.75 * yOffset);
@@ -245,7 +313,14 @@ void ofApp::drawArrow(std::pair<float, float> nodeCords, string label) const
 	}
 }
 
-// -------------------------------- Events --------------------------------
+
+// Converts floats to a string with truncated decimal places
+std::string ofApp::floatToStringTruncated(float value, int decimalPlaces) const
+{
+	return to_string(value).substr(0, to_string(value).find('.') + decimalPlaces + 1);
+}
+
+// -------------------------------- Input Events --------------------------------
 
 void ofApp::keyPressed(int key)
 {
@@ -253,12 +328,12 @@ void ofApp::keyPressed(int key)
 	if (key == OF_KEY_LEFT)
 	{
 		highlightSelectedToggle = true;
-		selectedNodeSlider = selectedNodeSlider == 0 ? totalNodes - 1 : selectedNodeSlider - 1;
+		selectedNodeSlider = selectedNodeSlider == 0 ? totalNodes - 1 : selectedNodeSlider - 1; // Loops at min value
 	}
 	else if (key == OF_KEY_RIGHT)
 	{
 		highlightSelectedToggle = true;
-		selectedNodeSlider = (selectedNodeSlider + 1) % totalNodes;
+		selectedNodeSlider = (selectedNodeSlider + 1) % totalNodes; // Loops at max values
 	}
 }
 
@@ -307,53 +382,13 @@ void ofApp::keyReleased(int key)
 		launchAnimationButtonPressed();
 }	
 
-void ofApp::mouseMoved(int x, int y)
-{
-
-}
-
-void ofApp::mouseDragged(int x, int y, int button)
-{
-
-}
-
-void ofApp::mousePressed(int x, int y, int button)
-{
-
-}
-
 void ofApp::mouseReleased(int x, int y, int button)
 {
 	// Update selected node gui elements
 	if (button == 0) // Left mouse
 	{
 		unsigned int selected = graph->getSelectedNodeID(x, y);
-		if (selected != -1)
+		if (selected != -1) // Value of selected if no node at click position
 			selectedNodeSlider = selected;
 	}
-}
-
-void ofApp::mouseEntered(int x, int y)
-{
-
-}
-
-void ofApp::mouseExited(int x, int y)
-{
-
-}
-
-void ofApp::windowResized(int w, int h)
-{
-
-}
-
-void ofApp::gotMessage(ofMessage msg)
-{
-
-}
-
-void ofApp::dragEvent(ofDragInfo dragInfo)
-{
-
 }

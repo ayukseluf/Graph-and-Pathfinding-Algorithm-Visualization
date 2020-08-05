@@ -1,5 +1,7 @@
 #include "Edge.h"
 
+// --------------------------- Constructor ------------------------------
+
 Edge::Edge(unsigned int fromID, unsigned int toID, float weight, short edgeID)
 {
     this->fromID = fromID;
@@ -8,17 +10,19 @@ Edge::Edge(unsigned int fromID, unsigned int toID, float weight, short edgeID)
     this->edgeID = edgeID;
 }
 
-short Edge::getFrom() const
+// ---------------------------- Accessors -------------------------------
+
+unsigned int Edge::getFrom() const
 {
     return this->fromID;
 }
 
-short Edge::getTo() const
+unsigned int Edge::getTo() const
 {
     return this->toID;
 }
 
-short Edge::getWeight() const
+float Edge::getWeight() const
 {
     return this->weight;
 }

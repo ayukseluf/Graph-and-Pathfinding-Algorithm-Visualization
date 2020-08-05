@@ -9,12 +9,13 @@ class Edge
         short edgeID;
     
     public:
+
         // Constructor
         Edge(unsigned int fromID, unsigned int toID, float weight, short edgeID);
 
         // Accessors
         short getEdgeID() const;
-        short getFrom() const;
-        short getTo() const;
-        short getWeight() const;
+        unsigned int getFrom() const;
+        unsigned int getTo() const;
+        float getWeight() const;
 };
