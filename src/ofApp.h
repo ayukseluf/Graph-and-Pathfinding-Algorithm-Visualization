@@ -21,6 +21,9 @@ class ofApp : public ofBaseApp
 	float totalWeight; // of shortest path
 	float elapsedTime; // of dijkstra's algorithim execution
 	float idealTime; // required to travel from source to target
+	float velocity;
+	float currentEdgeWeight; // Weight of the edge currently being drawn
+	float accumulativeTotalWeight; // Total weight of shortestPath drawn
 
 	// Menu visibility
 	bool showAllMenus;
@@ -68,14 +71,17 @@ class ofApp : public ofBaseApp
 	ofxIntSlider selectedNodeSlider;
 	ofxFloatSlider animationSpeedSlider;
 	ofxFloatSlider velocitySlider;
-	ofxFloatSlider timeLimitSlider;
 
 	// Results menu
 	ofxGuiGroup resultsGui;
-	ofxLabel dijRuntimeLabel;
+	ofxLabel currentEdgeWeightLabel;
+	ofxLabel totalEdgeWeightLabel;
+	ofxLabel spacer4;
 	ofxLabel idealTimeLabel;
 	ofxLabel actualTimeLabel;
 	ofxLabel timeDeltaLabel;
+	ofxLabel spacer5;
+	ofxLabel dijRuntimeLabel;
 
 	// Primary Functions
 	void setup();

@@ -34,7 +34,7 @@ void ofApp::setup()
 
 	// Help Gui
 	helpGui.setup("Help");
-	helpGui.setPosition(ofGetWidth() - guiElementWidth - 5, 150);
+	helpGui.setPosition(ofGetWidth() - guiElementWidth - 5, 100);
 	helpGui.add(keyBinding1.setup("Toggle All", "     tab"));
 	helpGui.add(keyBinding2.setup("Toggle Help", "    h"));
 	helpGui.add(keyBinding3.setup("Toggle Settings", "s"));
@@ -47,7 +47,7 @@ void ofApp::setup()
 
 	// Settings Gui
 	settingsGui.setup("Settings");
-	settingsGui.setPosition(ofGetWidth() - guiElementWidth - 5, 370);
+	settingsGui.setPosition(ofGetWidth() - guiElementWidth - 5, 320);
 	settingsGui.add(_125NodeButton.setup("125 Nodes"));
 	settingsGui.add(_250NodeButton.setup("250 Nodes"));
 	settingsGui.add(_500NodeButton.setup("500 Nodes"));
@@ -56,7 +56,7 @@ void ofApp::setup()
 	settingsGui.add(spacer1.setup("",""));
 	settingsGui.add(sourceNodeSlider.setup("Source Node ID", sourceNodeID, 0, totalNodes - 1));
 	settingsGui.add(targetNodeSlider.setup("Target Node ID", targetNodeID, 0, totalNodes - 1));
-	settingsGui.add(highlightSourceTargetToggle.setup("Highlight", false));
+	settingsGui.add(highlightSourceTargetToggle.setup("Highlight", true));
 	settingsGui.add(spacer2.setup("", ""));
 	settingsGui.add(selectedNodeSlider.setup("Selected Node", selectedNodeID, 0, totalNodes - 1));
 	settingsGui.add(selectedCordLabel.setup("Coordinates", makeSelectedCordLabel()));
@@ -66,16 +66,19 @@ void ofApp::setup()
 	settingsGui.add(spacer3.setup("", ""));
 	settingsGui.add(animationSpeedSlider.setup("Animation Speed", 1, .1, 2));
 	settingsGui.add(velocitySlider.setup("Velocity", 20, .1, 100));
-	settingsGui.add(timeLimitSlider.setup("Time Limit", 500, 1, 1000));
 	settingsGui.add(launchAnimationButton.setup("Launch Animation"));
 
 	// Results Gui
 	resultsGui.setup("Results");
-	resultsGui.setPosition(ofGetWidth() - guiElementWidth - 5, 900);
+	resultsGui.setPosition(ofGetWidth() - guiElementWidth - 5, 750);
+	resultsGui.add(currentEdgeWeightLabel.setup("Current Edge Weight", ""));
+	resultsGui.add(totalEdgeWeightLabel.setup("Total Edge Weight", ""));
+	resultsGui.add(spacer4.setup("", ""));
+	resultsGui.add(idealTimeLabel.setup("Ideal Travel Time",""));
+	resultsGui.add(actualTimeLabel.setup("Actual Travel Time",""));
+	resultsGui.add(timeDeltaLabel.setup("Travel Time Delta", ""));
+	resultsGui.add(spacer5.setup("", ""));
 	resultsGui.add(dijRuntimeLabel.setup("Dijkstra Runtime", ""));
-	resultsGui.add(idealTimeLabel.setup("Ideal Time Taken",""));
-	resultsGui.add(actualTimeLabel.setup("Actual Time Taken",""));
-	resultsGui.add(timeDeltaLabel.setup("Time Delta", ""));
 }
 
 void ofApp::update()
@@ -90,22 +93,39 @@ void ofApp::update()
 	// Update results after animation concluded
 	if (toBeDrawn.empty() && shortestPath.size() > 0)
 	{
-		std::string spacer = "          ";
+		std::string spacer = "          "; // Used to align labels relative to each other
 
 		// Actual time -> weight of best path / velocity
-		std::string actualTimeString = floatToStringTruncated(totalWeight / velocitySlider, 2);
-		actualTimeLabel = spacer.substr(0, spacer.length() - actualTimeString.length() - 1) + actualTimeString; // Align text
+		std::string actualTimeString = floatToStringTruncated(totalWeight / velocity, 2);
+		actualTimeLabel = spacer.substr(0, spacer.length() - actualTimeString.length() - 1) + actualTimeString; 
 
 		// Ideal time -> straight line distance between source and target / velocity
 		std::string idealTimeString = floatToStringTruncated(idealTime, 2);
-		idealTimeLabel = spacer.substr(0, spacer.length() - idealTimeString.length()) + idealTimeString; // Align text
+		idealTimeLabel = spacer.substr(0, spacer.length() - idealTimeString.length()) + idealTimeString; 
 
 		// Delta -> actual time - ideal time
 		std::string delta = floatToStringTruncated(stof(actualTimeString) - stof(idealTimeString), 2);
-		timeDeltaLabel = " " + spacer.substr(0, spacer.length() - delta.length() + 9) + delta; // Align text
+		timeDeltaLabel = spacer.substr(0, spacer.length() - delta.length()) + delta;
 
 		// Dijkstras runtime
-		dijRuntimeLabel = to_string((int)elapsedTime) + " ms";
+		dijRuntimeLabel = spacer.substr(0, spacer.length() - idealTimeString.length() + 1) + to_string((int)elapsedTime) + " ms";
+
+		// Current Edge Weight
+		currentEdgeWeightLabel = "";
+	}
+
+	// Update results during animation
+	if (!toBeDrawn.empty())
+	{
+		std::string spacer = "          "; // Used to align labels relative to each other
+		
+		// Acumulative Total Weight
+		std::string totalWeightString = floatToStringTruncated(accumulativeTotalWeight, 2);
+		totalEdgeWeightLabel = spacer.substr(0, spacer.length() - totalWeightString.length()) + totalWeightString;
+
+		// Current Edge Weight
+		std::string currentEdgeWeightString = floatToStringTruncated(currentEdgeWeight, 2);
+		currentEdgeWeightLabel = spacer.substr(0, spacer.length() - currentEdgeWeightString.length() - 2) + currentEdgeWeightString;
 	}
 }
 
@@ -153,17 +173,20 @@ void ofApp::draw()
 void ofApp::sourceNodeSliderChanged(int& sourceNode)
 {
 	sourceNodeID = sourceNode;
+	shortestPath.clear();
 }
 
 void ofApp::targetNodeSliderChanged(int& targetNode)
 {
 	targetNodeID = targetNode;
+	shortestPath.clear();
 }
 
 void ofApp::selectedNodeSliderChanged(int& selectedNode)
 {
 	selectedNodeID = selectedNode;
 	selectedCordLabel = makeSelectedCordLabel();
+	highlightSelectedToggle = true;
 }
 
 void ofApp::setSourceButtonPressed()
@@ -205,6 +228,7 @@ void ofApp::launchAnimationButtonPressed()
 	// Reset values from previous shortest path
 	shortestPath.clear();
 	totalWeight = 0;
+	accumulativeTotalWeight = 0;
 	idealTimeLabel = "";
 	actualTimeLabel = "";
 	timeDeltaLabel = "";
@@ -217,7 +241,8 @@ void ofApp::launchAnimationButtonPressed()
 		graph->Dijkstra(sourceNodeID);
 		elapsedTime = ofGetElapsedTimeMillis();
 	}
-	idealTime = ofDist(graph->getCordsFromID(sourceNodeID).first, graph->getCordsFromID(sourceNodeID).second, graph->getCordsFromID(targetNodeID).first, graph->getCordsFromID(targetNodeID).second) / velocitySlider;
+	velocity = velocitySlider;
+	idealTime = ofDist(graph->getCordsFromID(sourceNodeID).first, graph->getCordsFromID(sourceNodeID).second, graph->getCordsFromID(targetNodeID).first, graph->getCordsFromID(targetNodeID).second) / velocity;
 	
 	// Push all edges in the shortest path to toBeDrawn
 	toBeDrawn = graph->establishPath(targetNodeID);
@@ -246,6 +271,8 @@ void ofApp::generateGraph(unsigned int numNodes)
 	// Update ofApp values
 	totalNodes = numNodes;
 
+	bool toggled = highlightSelectedToggle;
+
 	sourceNodeSlider.setMax(totalNodes - 1);
 	sourceNodeID = totalNodes / 4;
 	sourceNodeSlider = sourceNodeID;
@@ -257,6 +284,8 @@ void ofApp::generateGraph(unsigned int numNodes)
 	selectedNodeSlider.setMax(totalNodes - 1);
 	selectedNodeID = totalNodes / 2;
 	selectedNodeSlider = totalNodes / 2;
+
+	highlightSelectedToggle = toggled;
 }
 
 // Draws edges in shortestPath. Animation effect created by popping edges off of to be drawn stack every "delay" frames.
@@ -266,7 +295,9 @@ void ofApp::drawShortestPath(int delay)
 	if (!toBeDrawn.empty() && ofGetFrameNum() % delay == 0)
 	{
 		shortestPath.push_back(toBeDrawn.top());
+		currentEdgeWeight = toBeDrawn.top().getWeight();
 		totalWeight += toBeDrawn.top().getWeight();
+		accumulativeTotalWeight = totalWeight;
 		toBeDrawn.pop();
 	}
 
