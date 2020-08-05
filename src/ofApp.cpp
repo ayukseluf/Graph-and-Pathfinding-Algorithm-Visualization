@@ -77,6 +77,7 @@ void ofApp::setup()
 	resultsGui.add(idealTimeLabel.setup("Ideal Travel Time",""));
 	resultsGui.add(actualTimeLabel.setup("Actual Travel Time",""));
 	resultsGui.add(timeDeltaLabel.setup("Travel Time Delta", ""));
+	resultsGui.add(showIdealPathToggle.setup("Show Ideal Path", false));
 	resultsGui.add(spacer5.setup("", ""));
 	resultsGui.add(dijRuntimeLabel.setup("Dijkstra Runtime", ""));
 }
@@ -145,6 +146,12 @@ void ofApp::draw()
 	ofSetColor(254, 249, 199);
 	ofSetLineWidth(3);
 	drawShortestPath(21 - int(animationSpeedSlider * 10));
+
+	// Ideal Path
+	ofSetColor(254, 208, 0);
+	ofSetLineWidth(3);
+	if (showIdealPathToggle)
+		ofDrawLine(graph->getCordsFromID(sourceNodeID).first, graph->getCordsFromID(sourceNodeID).second, graph->getCordsFromID(targetNodeID).first, graph->getCordsFromID(targetNodeID).second);
 
 
 	// Highlighters

@@ -80,6 +80,7 @@ class ofApp : public ofBaseApp
 	ofxLabel idealTimeLabel;
 	ofxLabel actualTimeLabel;
 	ofxLabel timeDeltaLabel;
+	ofxToggle showIdealPathToggle;
 	ofxLabel spacer5;
 	ofxLabel dijRuntimeLabel;
 
