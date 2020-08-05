@@ -13,7 +13,7 @@ void ofApp::setup()
 
 	// Styling
 	ofFill();
-	ofBackground(80);
+	ofBackground(49, 68, 85);
 	guiElementWidth = 250; 
 	guiElementHeight = 20;
 	ofxGuiSetDefaultWidth(guiElementWidth);
@@ -132,30 +132,32 @@ void ofApp::update()
 void ofApp::draw()
 {
 	// Edges
-	ofSetColor(17, 100, 91);
+	ofSetColor(158, 90, 99);
 	ofSetLineWidth(2);
 	graph->drawEdges();
 
-	// Shortest Path
-	ofSetColor(0, 255, 0);
-	drawShortestPath(21 - int(animationSpeedSlider * 10));
-
 	// Nodes
-	ofSetColor(3, 218, 198);
+	ofSetColor(151, 170, 189);
 	if(totalNodes < 100000)
 		graph->drawNodes();
+
+	// Shortest Path
+	ofSetColor(254, 249, 199);
+	ofSetLineWidth(3);
+	drawShortestPath(21 - int(animationSpeedSlider * 10));
+
 
 	// Highlighters
 	if (highlightSourceTargetToggle)
 	{
-		ofSetColor(255, 0, 0);
+		ofSetColor(219, 54, 3);
 		drawArrow(graph->getCordsFromID(targetNodeID), "To");
-		ofSetColor(0, 255, 0);
+		ofSetColor(3, 219, 54);
 		drawArrow(graph->getCordsFromID(sourceNodeID), "From");
 	}
 	if (highlightSelectedToggle)
 	{
-		ofSetColor(255, 255, 0);
+		ofSetColor(254, 208, 0);
 		drawArrow(graph->getCordsFromID(selectedNodeID), "");
 	}
 
