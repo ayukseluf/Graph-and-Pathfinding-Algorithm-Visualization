@@ -241,7 +241,7 @@ void ofApp::generateGraph(unsigned int numNodes)
 	else if (numNodes == 1000)
 		graph = new Graph(numNodes, "data/1000-B.txt");
 	else if (numNodes == 100000)
-		graph = new Graph(numNodes, "FILE HERE");
+		graph = new Graph(numNodes, "data/100000.txt");
 
 	// Update ofApp values
 	totalNodes = numNodes;
