@@ -106,9 +106,11 @@ void Graph::Dijkstra(unsigned int sourceID)
         distances.push_back(10000000000000.00);
         predecessorNodesID.push_back(-1);
     }
+    
     // The distance to the source should be zero
     distances[sourceID] = 0;
-    // Min priorit queue used to find the node with the smallest distance
+
+    // Min priority queue used to find the node with the smallest distance
     priority_queue<pair<float, unsigned int>, vector<pair<float, unsigned int>>, greater<pair<unsigned int, unsigned int>>> unvisited;
     unvisited.push(make_pair(0, sourceID));
 

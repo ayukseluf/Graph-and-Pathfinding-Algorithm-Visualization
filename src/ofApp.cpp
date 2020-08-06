@@ -182,21 +182,30 @@ void ofApp::draw()
 
 void ofApp::sourceNodeSliderChanged(int& sourceNode)
 {
+	if (toBeDrawn.empty())
+	{
 	sourceNodeID = sourceNode;
 	shortestPath.clear();
+	}
 }
 
 void ofApp::targetNodeSliderChanged(int& targetNode)
 {
-	targetNodeID = targetNode;
-	shortestPath.clear();
+	if (toBeDrawn.empty())
+	{
+		targetNodeID = targetNode;
+		shortestPath.clear();
+	}
 }
 
 void ofApp::selectedNodeSliderChanged(int& selectedNode)
 {
-	selectedNodeID = selectedNode;
-	selectedCordLabel = makeSelectedCordLabel();
-	highlightSelectedToggle = true;
+	if (toBeDrawn.empty())
+	{
+		selectedNodeID = selectedNode;
+		selectedCordLabel = makeSelectedCordLabel();
+		highlightSelectedToggle = true;
+	}
 }
 
 void ofApp::setSourceButtonPressed()
@@ -211,26 +220,31 @@ void ofApp::setTargetButtonPressed()
 
 void ofApp::_125NodeButtonPressed()
 {
-	generateGraph(125);
+	if (toBeDrawn.empty())
+		generateGraph(125);
 }
 
 void ofApp::_250NodeButtonPressed()
 {
-	generateGraph(250);
+	if (toBeDrawn.empty())
+		generateGraph(250);
 }
 void ofApp::_500NodeButtonPressed()
 {
-	generateGraph(500);
+	if (toBeDrawn.empty())
+		generateGraph(500);
 }
 
 void ofApp::_1000NodeButtonPressed()
 {
-	generateGraph(1000);
+	if (toBeDrawn.empty())
+		generateGraph(1000);
 }
 
 void ofApp::maxNodeButtonPressed()
 {
-	generateGraph(100000);
+	if (toBeDrawn.empty())
+		generateGraph(100000);
 }
 
 void ofApp::launchAnimationButtonPressed()
