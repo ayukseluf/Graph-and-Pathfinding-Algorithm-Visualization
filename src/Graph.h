@@ -5,6 +5,7 @@
 #include <stack>
 #include <utility>
 #include <vector>
+#include <queue>
 #include "Edge.h"
 #include "Node.h"
 

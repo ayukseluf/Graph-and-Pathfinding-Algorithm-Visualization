@@ -98,15 +98,7 @@ void Graph::Dijkstra(unsigned int sourceID)
     lastSourceNodeID = sourceID;
     predecessorNodesID.clear();
     distances.clear();
-
-    Node currNode = nodes[sourceID];
-
-    // Visited will start empty and unvisited will be full
-    set <unsigned int> visited;
-    set <unsigned int> unvisited;
-
-    for (Node n : nodes) 
-        unvisited.insert(n.getNodeID());
+    
     
     // Initialize distance vector to a max value, and vectors holding previous nodes and edges to -1
     for (unsigned int i = 0; i < nodes.size(); i++) 
@@ -114,50 +106,39 @@ void Graph::Dijkstra(unsigned int sourceID)
         distances.push_back(10000000000000.00);
         predecessorNodesID.push_back(-1);
     }
-    
     // The distance to the source should be zero
     distances[sourceID] = 0;
+    // Min priorit queue used to find the node with the smallest distance
+    priority_queue<pair<float, unsigned int>, vector<pair<float, unsigned int>>, greater<pair<unsigned int, unsigned int>>> unvisited;
+    unvisited.push(make_pair(0, sourceID));
 
-    while (unvisited.begin() != unvisited.end()) 
+
+    while (unvisited.size() > 0) 
     {
-        //Look through all the adjacent distances to see if there is a shorter path
-        for (auto n : currNode.getAdjacentNodes()) 
-        {
-            // If less than distance then replace
-            if (distances[currNode.getNodeID()] + n.second < distances[n.first]) 
-            {
-                distances[n.first] = distances[currNode.getNodeID()] + n.second;
-                predecessorNodesID[n.first] = currNode.getNodeID();
-            }
-        }
-        
-        //Add the node into visited nodes
-        visited.insert(currNode.getNodeID());
+        //Looks at the top of the queue to find the node with the smallest distance
+        unsigned int currNode = unvisited.top().second;
 
-        // Delete the node because it has been visited
-        unvisited.erase(currNode.getNodeID());
+        float currDist = unvisited.top().first;
+
+        unvisited.pop();
 
         // Searches through the distance vector for the smallest weight as the next current Node
-        if (unvisited.begin() != unvisited.end()) 
-        {
-            auto it = unvisited.begin();
-            float min = 1000000000000.00;
-            unsigned int minNodeID = *it;
-            for (; it != unvisited.end(); it++) 
-            {
-                if (distances[*it] < min) 
-                {
-                    min = distances[*it];
-                    minNodeID = *it;
-                }
+        for (auto n : nodes[currNode].getAdjacentNodes()) {
+
+
+            if (currDist + n.second < distances[n.first]) {
+
+                distances[n.first] = currDist + n.second;
+
+                predecessorNodesID[n.first] = currNode;
+
+                unvisited.push(make_pair(distances[n.first], n.first));
             }
-            currNode = nodes[minNodeID];
         }
     }
 }
-
 // Returns stack of edges in shortest path from source to target node
-std::stack<Edge> Graph::establishPath(unsigned int finalID) 
+std::stack<Edge> Graph::establishPath(unsigned int finalID)
 {
     stack<Edge> edges;
     unsigned int currNodeID = finalID;

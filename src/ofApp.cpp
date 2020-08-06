@@ -253,7 +253,6 @@ void ofApp::launchAnimationButtonPressed()
 	}
 	velocity = velocitySlider;
 	idealTime = ofDist(graph->getCordsFromID(sourceNodeID).first, graph->getCordsFromID(sourceNodeID).second, graph->getCordsFromID(targetNodeID).first, graph->getCordsFromID(targetNodeID).second) / velocity;
-	
 	// Push all edges in the shortest path to toBeDrawn
 	toBeDrawn = graph->establishPath(targetNodeID);
 }
