@@ -8,3 +8,9 @@
 4) Type "ofxGui" next to addons.
 5) Select update.
 6) Launch Dijkstra Visualization on your IDE. Depending on your IDE you may get some configuration options. Press yes to all of them. 
+
+
+## Graph Generation
+
+The randomization was never implemented properly. Optimized random graph generation needs to be worked on, and the graph generation folder
+only captures a slight portion of the work done.
