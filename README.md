@@ -1,6 +1,6 @@
-## Graph-and-Pathfinding-Algorithm-Visualization
+# Graph-and-Pathfinding-Algorithm-Visualization
   
-# Dijkstra's Visualization Setup
+## Dijkstra's Visualization Setup
 
 1) Download OpenFrameworks - https://openframeworks.cc/download/
 2) Run "projectGenerator.exe", which is located inside the download.
