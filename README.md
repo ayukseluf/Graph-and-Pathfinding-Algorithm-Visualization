@@ -12,5 +12,5 @@
 
 ## Graph Generation
 
-The randomization was never implemented properly. Optimized random graph generation needs to be worked on, and the graph generation folder
+The data sets are not randomized. Optimized random graph generation needs to be worked on, and the graph generation folder
 only captures a slight portion of the work done.
